@@ -3,6 +3,7 @@
 
 
 
+
 import type {
     Feature,
     Testimonial,
@@ -180,7 +181,7 @@ export const CONTACTS: Contact[] = [
 export const CARDS: Card[] = [
     {
         id: 'card-1', type: 'Visa', number: '4214 •••• •••• 1234', nameOnCard: 'ALEX P BYRNE', expiry: '12/26', isFrozen: false,
-        imageUrl: 'https://images.unsplash.com/photo-1536514072410-50c818303852?q=80&w=2070&auto=format&fit=crop',
+        imageUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop',
         recentTransactions: [
             { description: 'Starbucks', date: 'July 22', amount: -7.50 },
             { description: 'Amazon.com', date: 'July 21', amount: -120.45 },

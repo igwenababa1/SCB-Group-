@@ -11,15 +11,39 @@ interface PaymentReceiptProps {
 }
 
 const PaymentReceipt: React.FC<PaymentReceiptProps> = ({ isOpen, onClose, receipt, setActiveView }) => {
-    const [animationState, setAnimationState] = useState<'init' | 'printing' | 'scanning' | 'stamping' | 'complete'>('init');
+    const [animationState, setAnimationState] = useState<'init' | 'generating' | 'signing' | 'sealing' | 'complete'>('init');
+    const [hashString, setHashString] = useState('');
+    const [isDownloading, setIsDownloading] = useState(false);
 
     useEffect(() => {
         if (isOpen) {
             setAnimationState('init');
-            setTimeout(() => setAnimationState('printing'), 100);
-            setTimeout(() => setAnimationState('scanning'), 1000);
-            setTimeout(() => setAnimationState('stamping'), 2500);
-            setTimeout(() => setAnimationState('complete'), 3000);
+            setHashString('');
+            
+            // Animation Sequence
+            setTimeout(() => setAnimationState('generating'), 300);
+            
+            // Simulate Hash Generation
+            setTimeout(() => {
+                setAnimationState('signing');
+                let result = '';
+                const characters = 'ABCDEF0123456789';
+                const interval = setInterval(() => {
+                    result = '';
+                    for (let i = 0; i < 64; i++) {
+                        result += characters.charAt(Math.floor(Math.random() * characters.length));
+                    }
+                    setHashString(result);
+                }, 50);
+                
+                setTimeout(() => {
+                    clearInterval(interval);
+                    setHashString(`0x${Array.from({length:60}, () => characters.charAt(Math.floor(Math.random() * characters.length))).join('')}`); // Final static hash
+                    setAnimationState('sealing');
+                }, 1500);
+            }, 1500);
+
+            setTimeout(() => setAnimationState('complete'), 4000);
         }
     }, [isOpen]);
 
@@ -35,157 +59,345 @@ const PaymentReceipt: React.FC<PaymentReceiptProps> = ({ isOpen, onClose, receip
         // Reset logic would be handled by parent
     };
 
+    // Mock Data for Professional Look
+    const uetr = `54a9-9f03-${Math.floor(Math.random() * 10000)}-899a-12e4`;
+    const valueDate = new Date().toISOString().split('T')[0];
+    const settlementChannel = receipt.category === 'Wire Transfer' ? 'SWIFT gpi' : 'Instant SEPA / ACH';
+    const docId = `DOC-${Math.floor(Math.random() * 1000000)}-${new Date().getFullYear()}`;
+    const cleanVendor = receipt.vendor.replace('Payment to ', '').replace('Transfer to ', '');
+
+    const handleDownload = () => {
+        setIsDownloading(true);
+        setTimeout(() => {
+            const element = document.createElement("a");
+            const file = new Blob(
+                [
+`SWEDISH CONSTRUCTION BANK - OFFICIAL RECEIPT
+============================================
+
+Transaction Reference: ${receipt.id || 'N/A'}
+Document ID: ${docId}
+UETR: ${uetr}
+Date: ${new Date().toLocaleString()}
+
+--------------------------------------------
+REMITTER
+Name: Alex P. Byrne
+Account: Infinite Debit (****1234)
+Bank: SCB Group, Stockholm
+Address: 123 Financial District, Stockholm
+
+BENEFICIARY
+Name: ${cleanVendor}
+Bank: Chase Manhattan, NY
+Account: ****${Math.floor(Math.random()*9000)+1000}
+
+--------------------------------------------
+PAYMENT DETAILS
+Amount: ${formatCurrency(receipt.total)}
+Value Date: ${valueDate}
+Channel: ${settlementChannel}
+Status: CLEARED & VERIFIED
+
+--------------------------------------------
+SECURITY
+Digital Fingerprint: ${hashString}
+Authorized By: Marcus Wallenberg, CCO
+
+--------------------------------------------
+Swedish Construction Bank AB (publ) is authorized by the Swedish Prudential Regulation Authority.
+Registered Office: 123 Financial District, Stockholm. Registered No. 556000-0000.
+This receipt is electronically generated and valid without seal.
+
+www.scb-group.com
+`
+                ],
+                { type: "text/plain" }
+            );
+            element.href = URL.createObjectURL(file);
+            element.download = `SCB_Receipt_${receipt.id || 'TX'}.txt`;
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+            setIsDownloading(false);
+        }, 1500);
+    };
+
     return (
-        <div className="fixed inset-0 z-[70] flex items-center justify-center overflow-hidden">
-            {/* Backdrop with Blur and Image */}
-            <div className="absolute inset-0 bg-[#0f172a]/90 backdrop-blur-xl transition-opacity duration-500" onClick={onClose}>
-                 <img 
-                    src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?q=80&w=2070&auto=format&fit=crop" 
-                    className="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-overlay"
-                    alt="Security Background"
-                />
+        <div className="fixed inset-0 z-[80] flex items-center justify-center overflow-hidden">
+            {/* Immersive Backdrop */}
+            <div className="absolute inset-0 bg-[#020617]/95 backdrop-blur-xl transition-opacity duration-700" onClick={onClose}>
+                 <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
             </div>
 
-            {/* Receipt Container */}
-            <div className={`relative z-10 w-full max-w-md transition-all duration-700 ease-out transform ${animationState === 'init' ? 'translate-y-[100vh]' : 'translate-y-0'}`}>
+            {/* Main Container */}
+            <div className={`relative z-20 w-full max-w-4xl h-[90vh] flex flex-col md:flex-row bg-white rounded-xl shadow-2xl overflow-hidden transition-all duration-1000 transform ${animationState === 'init' ? 'scale-90 opacity-0 translate-y-20' : 'scale-100 opacity-100 translate-y-0'}`}>
                 
-                {/* Printer Slot Visual (Top) */}
-                <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-3/4 h-8 bg-gray-800 rounded-t-xl border-t border-x border-gray-700 shadow-2xl z-20 flex items-end justify-center">
-                    <div className="w-11/12 h-1 bg-black/50 rounded-full mb-1"></div>
-                </div>
-
-                {/* The Receipt Paper */}
-                <div className="bg-[#fdfbf7] text-gray-800 rounded-b-xl shadow-2xl overflow-hidden relative font-mono text-sm" 
-                     style={{ 
-                         boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
-                         backgroundImage: 'url("https://www.transparenttextures.com/patterns/cream-paper.png")' 
-                     }}>
+                {/* Left Side: The Certificate (Paper) */}
+                <div className="flex-grow relative bg-[#fffdfa] text-[#1e293b] flex flex-col p-0 overflow-hidden w-full md:w-2/3 shadow-[inset_-10px_0_20px_rgba(0,0,0,0.05)]">
                     
-                    {/* Holographic Security Strip */}
-                    <div className="h-2 w-full bg-gradient-to-r from-yellow-400 via-yellow-200 to-yellow-500 opacity-50 relative overflow-hidden">
-                        <div className="absolute inset-0 bg-white/30 animate-[shimmer_2s_infinite] transform -skew-x-12"></div>
+                    {/* Security Background Pattern (Guilloche Simulation) */}
+                    <div className="absolute inset-0 pointer-events-none opacity-[0.04]" 
+                         style={{ 
+                             backgroundImage: 'radial-gradient(circle at 50% 50%, #1a365d 1px, transparent 1px)', 
+                             backgroundSize: '20px 20px' 
+                         }}>
+                    </div>
+                    
+                    {/* Top Decorative Strip */}
+                    <div className="absolute top-0 left-0 w-full h-3 bg-[#1a365d] flex items-center justify-between px-2">
+                        <span className="text-[8px] text-white/50 font-mono tracking-[0.5em]">SECURE DOCUMENT • DO NOT COPY</span>
+                        <span className="text-[8px] text-white/50 font-mono tracking-[0.5em]">SCB OFFICIAL</span>
                     </div>
 
                     {/* Header */}
-                    <div className="p-8 text-center border-b-2 border-dashed border-gray-300 relative">
-                         {/* Watermark */}
-                        <div className="absolute inset-0 flex items-center justify-center opacity-[0.03] pointer-events-none">
-                            <i className="fas fa-university text-9xl"></i>
-                        </div>
-
-                        <div className="w-16 h-16 mx-auto bg-[#1a365d] text-white rounded-full flex items-center justify-center mb-4 shadow-lg">
-                            <i className="fas fa-check text-3xl"></i>
-                        </div>
-                        <h2 className="text-2xl font-bold uppercase tracking-widest text-[#1a365d]">Transaction<br/>Certificate</h2>
-                        <p className="text-[10px] text-gray-500 mt-2 uppercase tracking-wider">Authorized by Swedish Construction Bank</p>
-                    </div>
-
-                    {/* Transaction Details */}
-                    <div className="p-8 space-y-4 relative">
-                        {/* Scanning Animation Overlay */}
-                        {animationState === 'scanning' && (
-                            <div className="absolute top-0 left-0 w-full h-1 bg-green-400/50 shadow-[0_0_15px_rgba(74,222,128,0.5)] animate-[scan_1.5s_linear_forwards] z-10"></div>
-                        )}
-                        
-                        <div className="flex justify-between items-center">
-                            <span className="text-gray-500 text-xs uppercase">Status</span>
-                            <span className="text-green-600 font-bold uppercase flex items-center gap-1">
-                                <i className="fas fa-circle text-[8px]"></i> Success
-                            </span>
-                        </div>
-
-                         <div className="flex justify-between items-center">
-                            <span className="text-gray-500 text-xs uppercase">Ref ID</span>
-                            <span className="font-bold">{Math.random().toString(36).substr(2, 12).toUpperCase()}</span>
-                        </div>
-                        
-                         <div className="flex justify-between items-center">
-                            <span className="text-gray-500 text-xs uppercase">Date</span>
-                            <span className="font-bold">{formatDate(new Date().toISOString())}</span>
-                        </div>
-
-                        <div className="my-4 border-t border-dashed border-gray-300"></div>
-
+                    <div className="p-8 pt-10 border-b border-gray-200 relative z-10 flex justify-between items-start">
                         <div className="flex items-center gap-4">
-                             <div className="w-10 h-10 rounded-full bg-gray-200 overflow-hidden border border-gray-300">
-                                 {receipt.vendorLogo && <img src={receipt.vendorLogo} className="w-full h-full object-cover" />}
-                             </div>
-                             <div>
-                                 <p className="text-xs text-gray-500 uppercase">Beneficiary</p>
-                                 <p className="font-bold text-lg leading-none">{receipt.vendor.replace('Payment to ', '')}</p>
-                             </div>
+                            <div className="w-14 h-14 bg-[#1a365d] text-white rounded-lg flex items-center justify-center shadow-xl border-2 border-[#e6b325]">
+                                <i className="fas fa-university text-2xl"></i>
+                            </div>
+                            <div>
+                                <h1 className="text-2xl font-serif font-bold text-[#1a365d] tracking-wide">SCB Group</h1>
+                                <p className="text-[10px] uppercase tracking-[0.2em] text-gray-500 font-bold">Global Transaction Services</p>
+                                <p className="text-[9px] text-gray-400 mt-1">123 Financial District, Stockholm, Sweden</p>
+                                <p className="text-[9px] text-gray-400">+46 (0) 8 123 45 67 • support@scb-group.com</p>
+                            </div>
+                        </div>
+                        <div className="text-right">
+                            <h2 className="text-lg font-bold uppercase tracking-widest text-[#1a365d]">Payment Advice</h2>
+                            <p className="text-[10px] font-mono text-gray-500 mt-1">Original Document</p>
+                            <div className="mt-2 border border-gray-300 p-1 px-2 inline-block rounded bg-gray-50">
+                                <p className="text-[9px] font-bold text-gray-600">DOC ID: {docId}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Body Content */}
+                    <div className="flex-grow p-8 relative overflow-y-auto scrollbar-hide">
+                        {/* Watermark */}
+                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                            <i className="fas fa-globe-europe text-[240px] text-[#1a365d] opacity-[0.03]"></i>
                         </div>
 
-                        <div className="my-4 border-t border-dashed border-gray-300"></div>
-
-                        <div className="flex justify-between items-end">
-                            <span className="text-gray-500 text-xs uppercase">Total Amount</span>
-                            <span className="text-3xl font-bold text-[#1a365d]">{formatCurrency(receipt.total)}</span>
+                        {/* Authority Stamp Animation */}
+                        <div className={`absolute top-12 right-12 w-40 h-40 border-4 border-double border-green-700/40 rounded-full flex items-center justify-center transform rotate-[-12deg] transition-all duration-700 z-20 mix-blend-multiply ${animationState === 'sealing' || animationState === 'complete' ? 'opacity-90 scale-100' : 'opacity-0 scale-150'}`}>
+                            <div className="w-36 h-36 border border-green-700/40 rounded-full flex flex-col items-center justify-center text-green-800/60 p-2 text-center">
+                                <span className="text-[9px] font-black uppercase tracking-widest">SCB International</span>
+                                <span className="text-2xl font-black uppercase my-1 tracking-widest text-green-700/70">PAID</span>
+                                <span className="text-[9px] font-bold uppercase">{new Date().toLocaleDateString()}</span>
+                                <span className="text-[8px] uppercase mt-1">Verified & Cleared</span>
+                            </div>
                         </div>
+
+                        {/* Amount Section */}
+                        <div className="mb-8 p-6 bg-[#f8f9fa] rounded-xl border border-gray-200 relative z-10">
+                            <div className="flex justify-between items-end">
+                                <div>
+                                    <p className="text-xs text-gray-500 uppercase tracking-widest mb-1 font-bold">Transaction Amount</p>
+                                    <div className="flex items-baseline gap-2">
+                                        <span className="text-4xl font-serif font-bold text-[#1a365d]">{formatCurrency(receipt.total)}</span>
+                                        <span className="text-sm font-bold text-gray-400">USD</span>
+                                    </div>
+                                    <p className="text-[10px] text-gray-400 italic mt-1">
+                                        {/* Very basic number to words sim */}
+                                        (Confirmed funds transfer)
+                                    </p>
+                                </div>
+                                <div className="text-right">
+                                    <p className="text-[10px] text-gray-500 uppercase font-bold mb-1">Value Date</p>
+                                    <p className="text-lg font-mono font-bold text-gray-800">{valueDate}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Detailed Grid */}
+                        <div className="grid grid-cols-2 gap-x-12 gap-y-8 text-sm relative z-10 mb-8">
+                            {/* Beneficiary */}
+                            <div className="space-y-2">
+                                <div className="flex items-center gap-2 border-b border-gray-200 pb-1 mb-2">
+                                    <i className="fas fa-user-check text-gray-400 text-xs"></i>
+                                    <p className="text-[10px] text-gray-500 uppercase font-bold">Beneficiary Details</p>
+                                </div>
+                                <p className="font-bold text-base text-[#1a365d]">{cleanVendor}</p>
+                                <p className="text-xs text-gray-500">Acct: ****{Math.floor(Math.random()*9000)+1000}</p>
+                                <p className="text-xs text-gray-500">Bank: Chase Manhattan, NY</p>
+                                <p className="text-[10px] text-gray-400">Addr: 270 Park Ave, New York, NY</p>
+                            </div>
+
+                            {/* Remitter */}
+                            <div className="space-y-2">
+                                <div className="flex items-center gap-2 border-b border-gray-200 pb-1 mb-2">
+                                    <i className="fas fa-building text-gray-400 text-xs"></i>
+                                    <p className="text-[10px] text-gray-500 uppercase font-bold">Remitter Details</p>
+                                </div>
+                                <p className="font-bold text-base text-[#1a365d]">Alex P. Byrne</p>
+                                <p className="text-xs text-gray-500">Acct: ****1234 (Infinite Debit)</p>
+                                <p className="text-xs text-gray-500">Bank: SCB Group, Stockholm</p>
+                                <p className="text-[10px] text-gray-400">Addr: 123 Financial District, Stockholm</p>
+                            </div>
+
+                            {/* Payment Details */}
+                            <div className="col-span-2 grid grid-cols-3 gap-4 bg-white border border-gray-200 p-4 rounded-lg">
+                                <div>
+                                    <p className="text-[9px] text-gray-500 uppercase font-bold mb-1">Payment Reference</p>
+                                    <p className="font-mono text-xs font-bold">{receipt.id || `TX-${Date.now()}`}</p>
+                                </div>
+                                <div>
+                                    <p className="text-[9px] text-gray-500 uppercase font-bold mb-1">UETR (Tracker)</p>
+                                    <p className="font-mono text-xs text-gray-600 break-all">{uetr}</p>
+                                </div>
+                                <div>
+                                    <p className="text-[9px] text-gray-500 uppercase font-bold mb-1">Settlement Channel</p>
+                                    <p className="font-mono text-xs text-gray-600">{settlementChannel}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Authorization Section */}
+                        <div className="flex justify-between items-end mt-12 pt-8 border-t-2 border-gray-100 relative">
+                             {/* QR Code */}
+                            <div className="text-center">
+                                <div className="bg-white p-1 border border-gray-200 inline-block mb-1">
+                                    <img 
+                                        src={`https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=SCB-VERIFY-${receipt.id}-${uetr}`} 
+                                        alt="Verification QR" 
+                                        className="w-20 h-20"
+                                    />
+                                </div>
+                                <p className="text-[8px] font-mono text-gray-400 uppercase">Scan to Verify</p>
+                            </div>
+
+                            {/* Signature */}
+                            <div className="text-center w-48">
+                                <div className="h-12 mb-2 flex items-end justify-center">
+                                    {animationState === 'complete' && (
+                                        <img 
+                                            src="https://upload.wikimedia.org/wikipedia/commons/e/e4/Signature_sample.svg" // Placeholder signature
+                                            className="h-10 opacity-80 filter sepia brightness-50 contrast-150" 
+                                            alt="Signature" 
+                                        />
+                                    )}
+                                </div>
+                                <div className="border-t border-gray-400 pt-1">
+                                    <p className="text-xs font-bold text-[#1a365d]">Marcus Wallenberg</p>
+                                    <p className="text-[9px] text-gray-500 uppercase">Chief Clearing Officer</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Footer / Blockchain Hash */}
+                    <div className="bg-[#f1f5f9] px-8 py-4 border-t border-gray-300 font-mono text-[9px] text-gray-500 relative">
+                         <div className="flex justify-between items-center mb-2">
+                            <span>DIGITAL FINGERPRINT:</span>
+                            <span className="font-bold text-[#1a365d]">{hashString || 'Generating...'}</span>
+                        </div>
+                        <p className="text-[8px] text-center text-gray-400 uppercase leading-tight">
+                            Swedish Construction Bank AB (publ) is authorized by the Swedish Prudential Regulation Authority. 
+                            Registered Office: 123 Financial District, Stockholm. Registered No. 556000-0000. 
+                            This receipt is electronically generated and valid without seal.
+                        </p>
+                    </div>
+                </div>
+
+                {/* Right Side: Visual Tracker & Actions (Dark Mode) - Hidden on small screens if needed, but kept for layout */}
+                <div className="w-full md:w-1/3 bg-[#0f172a] border-l border-white/10 p-8 flex flex-col justify-between text-white relative overflow-hidden">
+                    {/* Background Glow */}
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl -mr-32 -mt-32"></div>
+
+                    <div>
+                        <h3 className="text-xs font-bold uppercase tracking-widest text-blue-400 mb-8 flex items-center gap-2">
+                            <i className="fas fa-satellite-dish"></i> Network Trace
+                        </h3>
                         
-                        {/* Visual Map Path */}
-                        <div className="mt-6 bg-blue-50 rounded-lg p-3 border border-blue-100 flex justify-between items-center">
-                             <div className="flex flex-col items-center">
-                                 <div className="w-2 h-2 bg-[#1a365d] rounded-full mb-1"></div>
-                                 <span className="text-[8px] uppercase font-bold text-gray-500">NYC</span>
-                             </div>
-                             <div className="flex-grow mx-2 h-px bg-blue-300 relative">
-                                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white px-1">
-                                     <i className="fas fa-plane text-blue-400 text-xs transform rotate-45"></i>
-                                 </div>
-                             </div>
-                             <div className="flex flex-col items-center">
-                                 <div className="w-2 h-2 bg-green-500 rounded-full mb-1"></div>
-                                 <span className="text-[8px] uppercase font-bold text-gray-500">DEST</span>
-                             </div>
-                        </div>
+                        {/* Timeline */}
+                        <div className="space-y-8 relative pl-2">
+                            <div className="absolute top-2 left-[19px] w-0.5 h-[80%] bg-gray-700 -z-10"></div>
+                            
+                            <div className="flex gap-4 items-start group">
+                                <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center shadow-[0_0_15px_rgba(34,197,94,0.6)] z-10 border-2 border-[#0f172a]">
+                                    <i className="fas fa-check text-xs text-black"></i>
+                                </div>
+                                <div>
+                                    <p className="text-sm font-bold text-white">Initiated</p>
+                                    <p className="text-[10px] text-gray-400">SCB Stockholm Hub</p>
+                                    <p className="text-[9px] text-gray-500 font-mono mt-0.5">{new Date().toLocaleTimeString()}</p>
+                                </div>
+                            </div>
+                            
+                            <div className={`flex gap-4 items-start group transition-opacity duration-500 ${['signing', 'sealing', 'complete'].includes(animationState) ? 'opacity-100' : 'opacity-30'}`}>
+                                <div className={`w-8 h-8 rounded-full flex items-center justify-center z-10 border-2 border-[#0f172a] ${['signing', 'sealing', 'complete'].includes(animationState) ? 'bg-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.6)]' : 'bg-gray-700'}`}>
+                                    <i className="fas fa-shield-alt text-xs"></i>
+                                </div>
+                                <div>
+                                    <p className="text-sm font-bold text-white">Compliance</p>
+                                    <p className="text-[10px] text-gray-400">AML/KYC & ITCC Pass</p>
+                                </div>
+                            </div>
 
-                        {/* Stamp Animation */}
-                         <div className={`absolute bottom-10 right-8 border-4 border-green-600 text-green-600 font-black text-xl px-2 py-1 rounded transform -rotate-12 opacity-0 transition-all duration-300 ${animationState === 'stamping' || animationState === 'complete' ? 'opacity-50 scale-100' : 'scale-150'}`} style={{ transitionDelay: '0.1s' }}>
-                            AUTHORIZED
+                            <div className={`flex gap-4 items-start group transition-opacity duration-500 delay-200 ${['sealing', 'complete'].includes(animationState) ? 'opacity-100' : 'opacity-30'}`}>
+                                <div className={`w-8 h-8 rounded-full flex items-center justify-center z-10 border-2 border-[#0f172a] ${['sealing', 'complete'].includes(animationState) ? 'bg-purple-500 shadow-[0_0_15px_rgba(168,85,247,0.6)]' : 'bg-gray-700'}`}>
+                                    <i className="fas fa-globe text-xs"></i>
+                                </div>
+                                <div>
+                                    <p className="text-sm font-bold text-white">Clearing</p>
+                                    <p className="text-[10px] text-gray-400">{settlementChannel}</p>
+                                </div>
+                            </div>
+
+                            <div className={`flex gap-4 items-start group transition-opacity duration-500 delay-500 ${animationState === 'complete' ? 'opacity-100' : 'opacity-30'}`}>
+                                <div className={`w-8 h-8 rounded-full flex items-center justify-center z-10 border-2 border-[#0f172a] ${animationState === 'complete' ? 'bg-[#e6b325] text-black shadow-[0_0_15px_rgba(250,204,21,0.6)]' : 'bg-gray-700'}`}>
+                                    <i className="fas fa-flag text-xs"></i>
+                                </div>
+                                <div>
+                                    <p className="text-sm font-bold text-white">Settled</p>
+                                    <p className="text-[10px] text-gray-400">Funds Available</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    {/* Security Footer */}
-                    <div className="bg-gray-100 p-4 text-[9px] text-center text-gray-400 uppercase tracking-wider border-t border-gray-200">
-                        <p className="mb-1">Secure 256-bit SSL Encryption</p>
-                        <p>ITCC Compliance Verified • SCB Global Network</p>
-                        <div className="mt-2 flex justify-center gap-1">
-                            {Array.from({length: 20}).map((_, i) => (
-                                <div key={i} className="w-px h-2 bg-gray-300"></div>
-                            ))}
+                    <div className={`space-y-3 transition-all duration-700 transform ${animationState === 'complete' ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+                        <button 
+                            onClick={handleDownload}
+                            disabled={isDownloading}
+                            className="w-full py-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition-colors text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            {isDownloading ? (
+                                <>
+                                    <i className="fas fa-circle-notch fa-spin text-white"></i> Generating PDF...
+                                </>
+                            ) : (
+                                <>
+                                    <i className="fas fa-file-pdf text-red-400"></i> Download Official PDF
+                                </>
+                            )}
+                        </button>
+                        <button className="w-full py-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition-colors text-white">
+                             <i className="fas fa-share-alt text-blue-400"></i> Share Secure Link
+                        </button>
+                        <div className="flex gap-3 mt-4 pt-4 border-t border-white/10">
+                            <button onClick={handleNewTransfer} className="flex-1 py-3 rounded-xl bg-gray-800 hover:bg-gray-700 text-white font-bold text-sm transition-colors border border-gray-700">
+                                New Payment
+                            </button>
+                            <button onClick={handleDone} className="flex-1 py-3 rounded-xl bg-[#e6b325] hover:bg-[#d4a017] text-[#1a365d] font-bold text-sm transition-colors shadow-lg shadow-yellow-500/20">
+                                Dashboard
+                            </button>
                         </div>
                     </div>
-                </div>
 
-                {/* Actions */}
-                <div className={`mt-6 flex gap-3 transition-opacity duration-500 ${animationState === 'complete' ? 'opacity-100' : 'opacity-0'}`}>
-                    <button onClick={handleNewTransfer} className="flex-1 py-3 bg-white text-gray-800 font-bold rounded-xl shadow-lg hover:bg-gray-50 transition-colors">
-                        New Transfer
-                    </button>
-                    <button onClick={handleDone} className="flex-1 py-3 bg-[#e6b325] text-[#1a365d] font-bold rounded-xl shadow-lg hover:bg-[#d4a017] transition-colors">
-                        Done
-                    </button>
+                    {/* Loading Overlay for Right Side */}
+                    {animationState !== 'complete' && (
+                        <div className="absolute bottom-10 left-0 right-0 text-center">
+                            <div className="inline-block px-4 py-2 bg-blue-500/10 border border-blue-500/30 rounded-full">
+                                <p className="text-xs text-blue-400 animate-pulse flex items-center gap-2">
+                                    <i className="fas fa-circle-notch fa-spin"></i> Finalizing Settlement...
+                                </p>
+                            </div>
+                        </div>
+                    )}
                 </div>
-                
-                <div className={`mt-4 text-center transition-opacity duration-500 ${animationState === 'complete' ? 'opacity-100' : 'opacity-0'}`}>
-                     <button className="text-white/60 text-xs hover:text-white flex items-center justify-center gap-2 mx-auto">
-                        <i className="fas fa-download"></i> Download PDF Receipt
-                    </button>
-                </div>
-
             </div>
-            
-            <style>{`
-                @keyframes scan {
-                    0% { top: 0; }
-                    100% { top: 100%; }
-                }
-                @keyframes shimmer {
-                    0% { transform: translateX(-100%) skewX(-12deg); }
-                    100% { transform: translateX(100%) skewX(-12deg); }
-                }
-            `}</style>
         </div>
     );
 };
