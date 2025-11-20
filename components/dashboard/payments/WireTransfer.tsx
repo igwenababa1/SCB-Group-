@@ -114,6 +114,12 @@ const WireTransfer: React.FC<WireTransferProps> = ({ setActiveView }) => {
     const exchangeMargin = wireType === 'international' ? amountNum * marginRate : 0;
     const totalDebit = amountNum + fixedFee + intermediaryFee;
 
+    // Visual Breakdown Calculations
+    const totalVisualCost = amountNum + fixedFee + intermediaryFee + exchangeMargin;
+    const principalPct = totalVisualCost > 0 ? (amountNum / totalVisualCost) * 100 : 0;
+    const feesPct = totalVisualCost > 0 ? ((fixedFee + intermediaryFee) / totalVisualCost) * 100 : 0;
+    const marginPct = totalVisualCost > 0 ? (exchangeMargin / totalVisualCost) * 100 : 0;
+
     const handleConfirm = () => {
         const newReceipt = {
             vendor: `Wire to ${formData.recipientName}`,
@@ -235,10 +241,18 @@ const WireTransfer: React.FC<WireTransferProps> = ({ setActiveView }) => {
                             </h4>
                             
                             {/* Visual Bar */}
-                            <div className="flex h-3 rounded-full overflow-hidden mb-5 bg-gray-800">
-                                <div className="bg-blue-500 h-full transition-all duration-1000" style={{ width: '80%' }} title="Principal"></div>
-                                <div className="bg-yellow-500 h-full transition-all duration-1000" style={{ width: '10%' }} title="Fees"></div>
-                                {wireType === 'international' && <div className="bg-purple-500 h-full transition-all duration-1000" style={{ width: '10%' }} title="FX Margin"></div>}
+                            <div className="flex h-4 rounded-full overflow-hidden mb-5 bg-gray-800 border border-white/5">
+                                <div className="bg-blue-500 h-full transition-all duration-1000 relative group" style={{ width: `${principalPct}%` }} title="Principal">
+                                     <div className="opacity-0 group-hover:opacity-100 absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-black border border-white/10 text-white text-[10px] px-2 py-1 rounded whitespace-nowrap z-10">Principal: {principalPct.toFixed(1)}%</div>
+                                </div>
+                                <div className="bg-yellow-500 h-full transition-all duration-1000 relative group" style={{ width: `${feesPct}%` }} title="Fees">
+                                     <div className="opacity-0 group-hover:opacity-100 absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-black border border-white/10 text-white text-[10px] px-2 py-1 rounded whitespace-nowrap z-10">Fees: {feesPct.toFixed(1)}%</div>
+                                </div>
+                                {wireType === 'international' && (
+                                    <div className="bg-purple-500 h-full transition-all duration-1000 relative group" style={{ width: `${marginPct}%` }} title="FX Margin">
+                                         <div className="opacity-0 group-hover:opacity-100 absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-black border border-white/10 text-white text-[10px] px-2 py-1 rounded whitespace-nowrap z-10">Margin: {marginPct.toFixed(1)}%</div>
+                                    </div>
+                                )}
                             </div>
 
                             <div className="space-y-3 text-sm">
