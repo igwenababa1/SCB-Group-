@@ -3,12 +3,23 @@ import React, { useState } from 'react';
 import { SOCIAL_LINKS } from '../constants';
 import { useLanguage } from '../contexts/GlobalSettingsContext';
 import { LANGUAGES } from '../i18n';
+import ContentModal from './ContentModal';
 
 const Footer: React.FC = () => {
     const [email, setEmail] = useState('');
     const [formState, setFormState] = useState<'idle' | 'submitting' | 'success'>('idle');
     const [isLangOpen, setIsLangOpen] = useState(false);
     const { language, setLanguage } = useLanguage();
+
+    // Modal State
+    const [modalOpen, setModalOpen] = useState(false);
+    const [modalContent, setModalContent] = useState({ title: '', category: '' });
+
+    const handleLinkClick = (e: React.MouseEvent, title: string, category: string) => {
+        e.preventDefault();
+        setModalContent({ title, category });
+        setModalOpen(true);
+    };
 
     const handleEmailSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -124,20 +135,20 @@ const Footer: React.FC = () => {
                         </p>
                         
                         <div className="flex flex-wrap gap-4 pt-2">
-                            <a href="#" className="flex items-center gap-3 px-4 py-2 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-all group">
+                            <button onClick={(e) => handleLinkClick(e, 'App Store Download', 'Mobile App')} className="flex items-center gap-3 px-4 py-2 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-all group">
                                 <i className="fab fa-apple text-2xl text-gray-300 group-hover:text-white"></i>
-                                <div>
+                                <div className="text-left">
                                     <div className="text-[8px] text-gray-500 uppercase group-hover:text-gray-400">Download on the</div>
                                     <div className="text-xs font-bold text-gray-200 group-hover:text-white">App Store</div>
                                 </div>
-                            </a>
-                            <a href="#" className="flex items-center gap-3 px-4 py-2 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-all group">
+                            </button>
+                            <button onClick={(e) => handleLinkClick(e, 'Play Store Download', 'Mobile App')} className="flex items-center gap-3 px-4 py-2 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-all group">
                                 <i className="fab fa-google-play text-xl text-gray-300 group-hover:text-white"></i>
-                                <div>
+                                <div className="text-left">
                                     <div className="text-[8px] text-gray-500 uppercase group-hover:text-gray-400">Get it on</div>
                                     <div className="text-xs font-bold text-gray-200 group-hover:text-white">Google Play</div>
                                 </div>
-                            </a>
+                            </button>
                         </div>
                     </div>
 
@@ -172,7 +183,7 @@ const Footer: React.FC = () => {
                                 </button>
                             </form>
                             <p className="text-[10px] text-gray-500 mt-3">
-                                Protected by reCAPTCHA. See our <a href="#" className="text-gray-400 hover:text-white underline">Privacy Policy</a>.
+                                Protected by reCAPTCHA. See our <button onClick={(e) => handleLinkClick(e, 'Privacy Policy', 'Legal')} className="text-gray-400 hover:text-white underline">Privacy Policy</button>.
                             </p>
                         </div>
                     </div>
@@ -189,10 +200,13 @@ const Footer: React.FC = () => {
                             <ul className="space-y-3">
                                 {section.links.map((link) => (
                                     <li key={link}>
-                                        <a href="#" className="text-sm text-gray-400 hover:text-[#e6b325] transition-colors flex items-center group/link">
+                                        <button 
+                                            onClick={(e) => handleLinkClick(e, link, section.title)} 
+                                            className="text-sm text-gray-400 hover:text-[#e6b325] transition-colors flex items-center group/link w-full text-left"
+                                        >
                                             <span className="w-1 h-1 rounded-full bg-gray-600 mr-3 group-hover/link:bg-[#e6b325] transition-colors"></span>
                                             <span className="group-hover/link:translate-x-1 transition-transform duration-300">{link}</span>
-                                        </a>
+                                        </button>
                                     </li>
                                 ))}
                             </ul>
@@ -297,16 +311,24 @@ const Footer: React.FC = () => {
                     </div>
 
                     <div className="flex flex-wrap justify-center md:justify-start gap-x-6 gap-y-2 border-t border-white/5 pt-6">
-                        <a href="#" className="hover:text-[#e6b325] transition-colors">Privacy Policy</a>
-                        <a href="#" className="hover:text-[#e6b325] transition-colors">Terms & Conditions</a>
-                        <a href="#" className="hover:text-[#e6b325] transition-colors">Cookie Policy</a>
-                        <a href="#" className="hover:text-[#e6b325] transition-colors">Accessibility Statement</a>
-                        <a href="#" className="hover:text-[#e6b325] transition-colors">Sitemap</a>
-                        <a href="#" className="hover:text-[#e6b325] transition-colors">Security Center</a>
-                        <a href="#" className="hover:text-[#e6b325] transition-colors">Modern Slavery Statement</a>
+                        <button onClick={(e) => handleLinkClick(e, 'Privacy Policy', 'Legal')} className="hover:text-[#e6b325] transition-colors">Privacy Policy</button>
+                        <button onClick={(e) => handleLinkClick(e, 'Terms & Conditions', 'Legal')} className="hover:text-[#e6b325] transition-colors">Terms & Conditions</button>
+                        <button onClick={(e) => handleLinkClick(e, 'Cookie Policy', 'Legal')} className="hover:text-[#e6b325] transition-colors">Cookie Policy</button>
+                        <button onClick={(e) => handleLinkClick(e, 'Accessibility Statement', 'Legal')} className="hover:text-[#e6b325] transition-colors">Accessibility Statement</button>
+                        <button onClick={(e) => handleLinkClick(e, 'Sitemap', 'Site')} className="hover:text-[#e6b325] transition-colors">Sitemap</button>
+                        <button onClick={(e) => handleLinkClick(e, 'Security Center', 'Security')} className="hover:text-[#e6b325] transition-colors">Security Center</button>
+                        <button onClick={(e) => handleLinkClick(e, 'Modern Slavery Statement', 'Legal')} className="hover:text-[#e6b325] transition-colors">Modern Slavery Statement</button>
                     </div>
                 </div>
             </div>
+
+            {/* Content Modal */}
+            <ContentModal 
+                isOpen={modalOpen} 
+                onClose={() => setModalOpen(false)} 
+                title={modalContent.title} 
+                category={modalContent.category} 
+            />
         </footer>
     );
 };

@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect } from 'react';
 import { formatCurrency, formatDate } from '../../../utils/formatters';
 import { ACCOUNTS } from '../../../constants';
@@ -53,6 +51,40 @@ const EBillViewerModal: React.FC<{ isOpen: boolean; onClose: () => void; bill: B
             return () => clearTimeout(timer);
         }
     }, [isOpen]);
+
+    const handleDownload = () => {
+        const fileContent = `OFFICIAL BILLING STATEMENT
+==========================
+
+Biller: ${bill.billerName}
+Account Number: ${bill.accountNumber}
+Statement Date: ${new Date().toLocaleDateString()}
+
+--------------------------------
+
+Previous Balance: $0.00
+New Charges: ${formatCurrency(bill.amount)}
+Total Due: ${formatCurrency(bill.amount)}
+Due Date: ${new Date(bill.dueDate).toLocaleDateString()}
+
+--------------------------------
+
+Category: ${bill.category}
+Status: ${bill.status}
+
+Important Information:
+Late payments may be subject to a fee. Please ensure your payment reaches us by the due date.
+
+Thank you for being a valued customer.`;
+
+        const element = document.createElement("a");
+        const file = new Blob([fileContent], { type: "text/plain" });
+        element.href = URL.createObjectURL(file);
+        element.download = `${bill.billerName.replace(/\s+/g, '_')}_Statement.txt`;
+        document.body.appendChild(element);
+        element.click();
+        document.body.removeChild(element);
+    };
 
     if (!isOpen) return null;
 
@@ -119,7 +151,7 @@ const EBillViewerModal: React.FC<{ isOpen: boolean; onClose: () => void; bill: B
                             </div>
 
                             <div className="flex gap-4 mt-auto">
-                                <button className="flex-1 py-3 rounded-xl border border-white/10 hover:bg-white/5 text-white font-semibold transition-colors flex items-center justify-center gap-2 group">
+                                <button onClick={handleDownload} className="flex-1 py-3 rounded-xl border border-white/10 hover:bg-white/5 text-white font-semibold transition-colors flex items-center justify-center gap-2 group">
                                     <i className="fas fa-download group-hover:translate-y-0.5 transition-transform"></i> Download PDF
                                 </button>
                                 {bill.status !== 'Paid' && (

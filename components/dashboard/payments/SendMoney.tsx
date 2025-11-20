@@ -6,6 +6,7 @@ import type { ViewType, Account, Contact } from '../../../types';
 import { formatCurrency } from '../../../utils/formatters';
 import { useDashboard } from '../../../contexts/DashboardContext';
 import PaymentReceipt from './PaymentReceipt';
+import SecurityPinModal from './SecurityPinModal';
 
 interface SendMoneyProps {
     setActiveView: (view: ViewType) => void;
@@ -117,6 +118,9 @@ const SendMoney: React.FC<SendMoneyProps> = ({ setActiveView }) => {
     
     // Consent Logic
     const [consentAgreed, setConsentAgreed] = useState(false);
+    
+    // PIN Logic
+    const [showPinModal, setShowPinModal] = useState(false);
 
     // Simulated FX Rate for Send Money
     const [simulatedRate, setSimulatedRate] = useState(1);
@@ -215,7 +219,16 @@ const SendMoney: React.FC<SendMoneyProps> = ({ setActiveView }) => {
         "Settlement Confirmed"
     ];
 
-    const handleConfirm = () => {
+    const handleInitiateAuthorization = () => {
+        setShowPinModal(true);
+    };
+
+    const handlePinSuccess = () => {
+        setShowPinModal(false);
+        startProcessing();
+    };
+
+    const startProcessing = () => {
         setShowProcessingModal(true);
         setProcessingStep(0);
         
@@ -546,6 +559,14 @@ const SendMoney: React.FC<SendMoneyProps> = ({ setActiveView }) => {
                                     <p className="text-xs text-gray-400 uppercase tracking-widest font-bold mb-1">Total Debit Amount</p>
                                     <p className="text-3xl font-mono font-bold text-white">{formatCurrency(amountNum)}</p>
                                     {targetCurrency !== 'USD' && <p className="text-xs text-blue-400 mt-1">FX Rate: 1 USD = {simulatedRate.toFixed(4)} {targetCurrency}</p>}
+                                    <div className="mt-2 border-t border-white/5 pt-2">
+                                        <div className="flex justify-between text-[10px] text-gray-400 gap-4">
+                                            <span>Quote ID: {quoteId}</span>
+                                            <span>Inverse: 1 {targetCurrency} = {inverseRate} USD</span>
+                                            <span>Source: USD (United States Dollar)</span>
+                                            <span>Target: {targetCurrency} ({targetCurrency === 'EUR' ? 'Euro' : targetCurrency === 'GBP' ? 'British Pound' : 'Japanese Yen'})</span>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div className="text-right">
                                      <p className="text-[10px] text-gray-500 uppercase tracking-wider mb-1">Value Date</p>
@@ -575,7 +596,7 @@ const SendMoney: React.FC<SendMoneyProps> = ({ setActiveView }) => {
                         <div className="flex gap-4">
                             <button onClick={() => setStep(1)} className="px-8 py-4 rounded-xl border border-white/20 text-gray-300 font-semibold hover:bg-white/5 transition-colors">Edit Details</button>
                             <button 
-                                onClick={handleConfirm} 
+                                onClick={handleInitiateAuthorization} 
                                 disabled={!consentAgreed}
                                 className="flex-1 py-4 rounded-xl font-bold shadow-lg transition-all bg-gradient-to-r from-[#e6b325] to-[#d4a017] text-[#1a365d] hover:to-[#e6b325] disabled:opacity-50 disabled:cursor-not-allowed"
                             >
@@ -586,7 +607,13 @@ const SendMoney: React.FC<SendMoneyProps> = ({ setActiveView }) => {
                 </div>
             )}
             
-            {/* Processing Overlay */}
+            {/* Modals */}
+            <SecurityPinModal 
+                isOpen={showPinModal} 
+                onClose={() => setShowPinModal(false)} 
+                onSuccess={handlePinSuccess} 
+            />
+            
             <TransferProcessingModal isOpen={showProcessingModal} steps={processingSteps} currentStep={processingStep} />
 
             <PaymentReceipt 
