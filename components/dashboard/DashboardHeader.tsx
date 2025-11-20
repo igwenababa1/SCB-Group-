@@ -34,6 +34,7 @@ const viewTitleKeys: Record<ViewType, { title: TranslationKey, subtitle: Transla
     congratulations: { title: "netWorthTitle", subtitle: "netWorthSubtitle" },
 };
 
+const PROFILE_IMAGE_URL = "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=256&auto=format&fit=crop";
 
 const DashboardHeader: React.FC<DashboardHeaderProps> = ({ activeView, setActiveView }) => {
     const { logout } = useContext(AppContext);
@@ -42,33 +43,36 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ activeView, setActive
 
     const getGreeting = () => {
         const hour = new Date().getHours();
-        if (hour < 12) return "Good morning, Rodriguez!";
-        if (hour < 18) return "Good afternoon, Rodriguez!";
-        return "Good evening, Rodriguez!";
+        if (hour < 12) return "Good morning";
+        if (hour < 18) return "Good afternoon";
+        return "Good evening";
     };
     
-    // In a real app, this insight would be dynamically generated.
     const quickInsight = {
         icon: 'fa-chart-line',
         color: 'text-green-500 dark:text-green-400',
-        text: 'Your portfolio is up 1.05% today. Keep up the great work!'
+        text: 'Portfolio +1.05%'
     };
 
     const getTitleAndSubtitle = () => {
         if (activeView === 'dashboard') {
             return {
-                title: getGreeting(),
+                title: `${getGreeting()}, Rodriguez`,
                 subtitle: (
                     <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-                        <i className={`fas ${quickInsight.icon} ${quickInsight.color}`}></i>
-                        <span className="font-semibold">{quickInsight.text}</span>
+                        <span className="hidden md:inline">Executive Overview</span>
+                        <span className="hidden md:inline text-gray-300 dark:text-gray-600">•</span>
+                        <div className="flex items-center gap-1.5 bg-green-500/10 px-2 py-0.5 rounded border border-green-500/20">
+                            <i className={`fas ${quickInsight.icon} ${quickInsight.color} text-xs`}></i>
+                            <span className="font-bold text-xs text-green-600 dark:text-green-400">{quickInsight.text}</span>
+                        </div>
                     </div>
                 ),
             };
         }
         const { title: titleKey, subtitle: subtitleKey } = viewTitleKeys[activeView] || viewTitleKeys.dashboard;
         return {
-            title: t(titleKey as TranslationKey, { name: "Rodriguez!" }),
+            title: t(titleKey as TranslationKey, { name: "Rodriguez" }),
             subtitle: <p className="text-sm text-gray-500 dark:text-gray-400">{t(subtitleKey as TranslationKey)}</p>,
         };
     };
@@ -83,69 +87,126 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ activeView, setActive
     
     return (
         <>
-            <header className="bg-white dark:bg-slate-800 shadow-sm dark:shadow-none dark:border-b dark:border-slate-700 p-4 flex justify-between items-center flex-shrink-0 z-30">
-                <div className="flex items-center gap-4">
+            <header className="bg-white/90 dark:bg-[#0f172a]/90 backdrop-blur-xl shadow-sm border-b border-gray-200 dark:border-white/5 p-4 flex justify-between items-center sticky top-0 z-40 transition-all duration-300">
+                <div className="flex items-center gap-6">
                     {activeView !== 'dashboard' && (
                         <button
                             onClick={() => setActiveView(activeView === 'loan-application' ? 'loans' : 'dashboard')}
-                            className="w-10 h-10 bg-gray-100 hover:bg-gray-200 dark:bg-slate-700 dark:hover:bg-slate-600 rounded-full text-gray-600 dark:text-gray-300 flex items-center justify-center transition-colors flex-shrink-0"
+                            className="w-10 h-10 bg-white dark:bg-white/5 hover:bg-gray-50 dark:hover:bg-white/10 border border-gray-200 dark:border-white/10 rounded-full text-gray-600 dark:text-gray-300 flex items-center justify-center transition-all shadow-sm group"
                             aria-label="Go back"
                         >
-                            <i className="fas fa-arrow-left"></i>
+                            <i className="fas fa-arrow-left group-hover:-translate-x-0.5 transition-transform"></i>
                         </button>
                     )}
                     <div>
-                        <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">{title}</h2>
-                        {subtitle}
+                        <div className="flex items-center gap-3">
+                            <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight leading-none">{title}</h2>
+                            <div className="hidden lg:flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider">
+                                <i className="fas fa-shield-alt text-[9px]"></i> Secure
+                            </div>
+                        </div>
+                        <div className="mt-1">
+                            {subtitle}
+                        </div>
                     </div>
                 </div>
-                <div className="flex items-center space-x-6">
-                    <div className="relative">
+
+                {/* Central Command Search (Desktop) */}
+                <div className="hidden xl:flex flex-1 max-w-lg mx-12 relative group z-50">
+                    <div className="absolute inset-0 bg-blue-500/10 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    <div className="relative w-full">
+                        <i className="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors"></i>
                         <input 
                             type="text" 
-                            placeholder="Search..." 
+                            placeholder="Search assets, transactions, contacts..." 
                             onFocus={() => setIsSearchOpen(true)}
-                            className="hidden md:block w-64 pl-10 pr-4 py-2 border border-gray-300 dark:border-slate-600 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400/50 bg-transparent dark:bg-slate-700 dark:text-white dark:placeholder-gray-400" 
+                            className="w-full bg-gray-100 dark:bg-black/40 border border-gray-200 dark:border-white/10 rounded-full py-3 pl-12 pr-16 text-sm text-gray-800 dark:text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all shadow-inner"
                         />
-                         <i className="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 hidden md:block"></i>
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2 flex gap-1">
+                             <span className="text-[10px] text-gray-500 font-bold border border-gray-300 dark:border-gray-600 rounded px-1.5 py-0.5 bg-gray-50 dark:bg-white/5">⌘K</span>
+                        </div>
                     </div>
-                    
-                    <div className="flex items-center space-x-4">
+                </div>
+
+                <div className="flex items-center gap-3 md:gap-5">
+                    {/* Tools */}
+                    <div className="flex items-center gap-1 md:gap-2 bg-gray-100 dark:bg-white/5 p-1 rounded-full border border-gray-200 dark:border-white/5">
                         <button
                             onClick={toggleTheme}
-                            className="w-10 h-10 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-slate-700 transition-colors"
+                            className="w-9 h-9 rounded-full flex items-center justify-center text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white hover:bg-white dark:hover:bg-white/10 transition-all"
                             aria-label="Toggle theme"
                         >
-                            {theme === 'light' ? <i className="fas fa-moon text-xl"></i> : <i className="fas fa-sun text-xl"></i>}
+                            {theme === 'light' ? <i className="fas fa-moon"></i> : <i className="fas fa-sun"></i>}
                         </button>
                         <div className="relative">
-                            <button onClick={() => setIsCurrencyOpen(prev => !prev)} className="text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white">
-                                <i className="fas fa-coins text-2xl"></i>
+                            <button 
+                                onClick={() => setIsCurrencyOpen(prev => !prev)} 
+                                className={`w-9 h-9 rounded-full flex items-center justify-center transition-all ${isCurrencyOpen ? 'bg-white dark:bg-white/10 text-[#1a365d] dark:text-white shadow-sm' : 'text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white hover:bg-white dark:hover:bg-white/10'}`}
+                            >
+                                <i className="fas fa-coins"></i>
                             </button>
                             {isCurrencyOpen && <CurrencySelectorDropdown onClose={() => setIsCurrencyOpen(false)} />}
                         </div>
                         <div className="relative">
-                            <button onClick={() => setIsNotificationsOpen(prev => !prev)} className="text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white relative">
-                                <i className="fas fa-bell text-2xl"></i>
+                            <button 
+                                onClick={() => setIsNotificationsOpen(prev => !prev)} 
+                                className={`w-9 h-9 rounded-full flex items-center justify-center transition-all relative ${isNotificationsOpen ? 'bg-white dark:bg-white/10 text-[#1a365d] dark:text-white shadow-sm' : 'text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white hover:bg-white dark:hover:bg-white/10'}`}
+                            >
+                                <i className={`fas fa-bell ${unreadAlertsCount > 0 ? 'animate-swing' : ''}`}></i>
                                 {unreadAlertsCount > 0 && (
-                                    <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
-                                        {unreadAlertsCount}
-                                    </span>
+                                    <span className="absolute top-1.5 right-2 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white dark:ring-[#0f172a]"></span>
                                 )}
                             </button>
                             {isNotificationsOpen && <NotificationsDropdown onClose={() => setIsNotificationsOpen(false)} />}
                         </div>
+                    </div>
 
-                        <div className="flex items-center space-x-2">
-                            <img src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?q=80&w=2080&auto-format&fit=crop" alt="User" className="w-10 h-10 rounded-full" />
-                            <div>
-                                <div className="flex items-center gap-1.5">
-                                    <p className="font-semibold text-gray-800 dark:text-gray-100">Rodriguez Garcia</p>
-                                    <span title="Verified Client">
-                                        <i className="fas fa-check-circle text-blue-500 text-sm"></i>
-                                    </span>
+                    <div className="h-8 w-px bg-gray-200 dark:bg-white/10 hidden md:block"></div>
+
+                    {/* User Profile */}
+                    <div className="relative group">
+                        <button className="flex items-center gap-3 focus:outline-none">
+                            <div className="text-right hidden md:block">
+                                <p className="text-sm font-bold text-gray-800 dark:text-white leading-none">Rodriguez Garcia</p>
+                                <div className="flex items-center justify-end gap-1 mt-1">
+                                    <i className="fas fa-crown text-[10px] text-[#e6b325]"></i>
+                                    <p className="text-[9px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest">Private Wealth</p>
                                 </div>
-                                <button onClick={logout} className="text-xs text-red-500 hover:underline">Log Out</button>
+                            </div>
+                            <div className="relative">
+                                <div className="w-11 h-11 rounded-full p-[2px] bg-gradient-to-br from-[#e6b325] via-yellow-300 to-yellow-600 shadow-lg">
+                                    <img 
+                                        src={PROFILE_IMAGE_URL} 
+                                        alt="User" 
+                                        className="w-full h-full rounded-full object-cover border-2 border-white dark:border-[#0f172a]" 
+                                    />
+                                </div>
+                                <div className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 border-2 border-white dark:border-[#0f172a] rounded-full"></div>
+                            </div>
+                            <i className="fas fa-chevron-down text-gray-400 text-xs group-hover:text-gray-600 dark:group-hover:text-white transition-colors"></i>
+                        </button>
+                        
+                        {/* Dropdown Menu */}
+                        <div className="absolute top-full right-0 mt-3 w-60 bg-white dark:bg-[#1e293b] rounded-xl shadow-2xl border border-gray-100 dark:border-white/10 overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform translate-y-2 group-hover:translate-y-0 z-50">
+                            <div className="p-4 border-b border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-black/20">
+                                <p className="text-xs text-gray-500 dark:text-gray-400 uppercase font-bold tracking-wider mb-1">Signed in as</p>
+                                <p className="text-sm font-bold text-gray-900 dark:text-white truncate">mrikimc@gmail.com</p>
+                            </div>
+                            <div className="p-2">
+                                <button onClick={() => setActiveView('settings')} className="w-full text-left px-3 py-2.5 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors flex items-center gap-3">
+                                    <div className="w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-500"><i className="fas fa-user-cog"></i></div>
+                                    Profile Settings
+                                </button>
+                                <button onClick={() => setActiveView('support')} className="w-full text-left px-3 py-2.5 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors flex items-center gap-3">
+                                    <div className="w-8 h-8 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-500"><i className="fas fa-headset"></i></div>
+                                    Support Center
+                                </button>
+                            </div>
+                            <div className="p-2 border-t border-gray-100 dark:border-white/5">
+                                <button onClick={logout} className="w-full text-left px-3 py-2.5 rounded-lg text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors flex items-center gap-3 font-semibold">
+                                    <div className="w-8 h-8 rounded-full bg-red-500/10 flex items-center justify-center text-red-500"><i className="fas fa-sign-out-alt"></i></div>
+                                    Sign Out
+                                </button>
                             </div>
                         </div>
                     </div>
