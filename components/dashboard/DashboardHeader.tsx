@@ -1,7 +1,7 @@
 
 import React, { useContext, useState, useMemo } from 'react';
 import { AppContext } from '../../App';
-import type { ViewType, TranslationKey } from '../../types';
+import type { ViewType, TranslationKey, Alert } from '../../types';
 import { ALERTS } from '../../constants';
 import NotificationsDropdown from './NotificationsDropdown';
 import GlobalSearchModal from './GlobalSearchModal';
@@ -40,6 +40,9 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ activeView, setActive
     const { logout } = useContext(AppContext);
     const { t } = useLanguage();
     const { theme, toggleTheme } = useTheme();
+
+    // State for Alerts to allow full functionality (Mark Read, Dismiss)
+    const [alerts, setAlerts] = useState<Alert[]>(ALERTS);
 
     const getGreeting = () => {
         const hour = new Date().getHours();
@@ -83,7 +86,8 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ activeView, setActive
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [isCurrencyOpen, setIsCurrencyOpen] = useState(false);
 
-    const unreadAlertsCount = useMemo(() => ALERTS.filter(a => !a.isRead).length, []);
+    const unreadAlertsCount = useMemo(() => alerts.filter(a => !a.isRead).length, [alerts]);
+    const hasCriticalAlerts = useMemo(() => alerts.some(a => a.severity === 'critical' && !a.isRead), [alerts]);
     
     return (
         <>
@@ -150,14 +154,23 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ activeView, setActive
                         <div className="relative">
                             <button 
                                 onClick={() => setIsNotificationsOpen(prev => !prev)} 
-                                className={`w-9 h-9 rounded-full flex items-center justify-center transition-all relative ${isNotificationsOpen ? 'bg-white dark:bg-white/10 text-[#1a365d] dark:text-white shadow-sm' : 'text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white hover:bg-white dark:hover:bg-white/10'}`}
+                                className={`w-9 h-9 rounded-full flex items-center justify-center transition-all relative ${isNotificationsOpen ? 'bg-white dark:bg-white/10 text-[#1a365d] dark:text-white shadow-sm' : 'text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white hover:bg-white dark:hover:bg-white/10'} ${hasCriticalAlerts ? 'animate-swing' : ''}`}
                             >
-                                <i className={`fas fa-bell ${unreadAlertsCount > 0 ? 'animate-swing' : ''}`}></i>
+                                <i className={`fas fa-bell`}></i>
                                 {unreadAlertsCount > 0 && (
-                                    <span className="absolute top-1.5 right-2 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white dark:ring-[#0f172a]"></span>
+                                    <span className="absolute top-1.5 right-2 w-2.5 h-2.5 bg-red-500 rounded-full ring-2 ring-white dark:ring-[#0f172a] flex items-center justify-center">
+                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                    </span>
                                 )}
                             </button>
-                            {isNotificationsOpen && <NotificationsDropdown onClose={() => setIsNotificationsOpen(false)} />}
+                            {isNotificationsOpen && (
+                                <NotificationsDropdown 
+                                    onClose={() => setIsNotificationsOpen(false)} 
+                                    alerts={alerts}
+                                    setAlerts={setAlerts}
+                                    setActiveView={setActiveView}
+                                />
+                            )}
                         </div>
                     </div>
 
