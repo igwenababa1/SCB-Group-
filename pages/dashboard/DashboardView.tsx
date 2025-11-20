@@ -12,6 +12,7 @@ import SessionInfoWidget from '../../components/dashboard/dashboard/SessionInfoW
 import MarketTicker from '../../components/dashboard/dashboard/MarketTicker';
 import PremiumCardsCarousel from '../../components/dashboard/dashboard/PremiumCardsCarousel';
 import ScanPayModal from '../../components/dashboard/dashboard/ScanPayModal';
+import ExecutiveStatusPanel from '../../components/dashboard/dashboard/ExecutiveStatusPanel';
 import { ACCOUNTS } from '../../constants';
 import { formatCurrency } from '../../utils/formatters';
 import { useCurrency } from '../../contexts/GlobalSettingsContext';
@@ -24,10 +25,21 @@ const DashboardView: React.FC<DashboardViewProps> = ({ setActiveView }) => {
     const [isTransferModalOpen, setIsTransferModalOpen] = useState(false);
     const [isAssistantOpen, setIsAssistantOpen] = useState(false);
     const [isScanPayOpen, setIsScanPayOpen] = useState(false);
+    const [isBalanceHidden, setIsBalanceHidden] = useState(false);
+    const [eyeAnimating, setEyeAnimating] = useState(false);
+
     const { currency, exchangeRate, language } = useCurrency();
 
     const totalAssets = ACCOUNTS.filter(a => a.type !== 'Credit').reduce((sum, item) => sum + item.balance, 0);
     const convertedTotalAssets = totalAssets * exchangeRate;
+
+    const toggleBalance = () => {
+        setEyeAnimating(true);
+        setTimeout(() => {
+            setIsBalanceHidden(prev => !prev);
+            setEyeAnimating(false);
+        }, 300); // Wait for "blink" close
+    };
 
     return (
         <div className="relative min-h-full bg-gray-50 dark:bg-[#0b1120]">
@@ -44,26 +56,54 @@ const DashboardView: React.FC<DashboardViewProps> = ({ setActiveView }) => {
                 <div className="p-8 max-w-[1600px] mx-auto space-y-10">
                     
                     {/* Hero Section: Net Worth & Cards */}
-                    <div>
-                        <div className="flex flex-col md:flex-row justify-between items-end mb-6 px-2">
-                            <div>
-                                <h2 className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-1">Total Portfolio Value</h2>
-                                <div className="flex items-baseline gap-3">
-                                    <h1 className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#1a365d] to-[#2d5c8a] dark:from-white dark:to-gray-300">
-                                        {formatCurrency(convertedTotalAssets, currency.code, language.code)}
-                                    </h1>
-                                    <span className="px-2 py-1 rounded-md bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-bold flex items-center">
-                                        <i className="fas fa-arrow-up mr-1"></i> 2.4%
-                                    </span>
+                    <div className="flex flex-col lg:flex-row justify-between items-end gap-8 mb-6">
+                        {/* Left: Balance Display */}
+                        <div className="flex-grow">
+                            <h2 className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2 flex items-center gap-2">
+                                Total Portfolio Value
+                                <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
+                            </h2>
+                            
+                            <div className="flex items-center gap-4">
+                                <div className="relative h-14 min-w-[250px]">
+                                    {isBalanceHidden ? (
+                                        <div className="flex items-center h-full gap-1 animate-pulse">
+                                            <span className="text-5xl font-extrabold text-gray-600 tracking-tighter">••••••</span>
+                                            <span className="text-xl font-bold text-gray-600 mt-2">USD</span>
+                                        </div>
+                                    ) : (
+                                        <div className="flex items-baseline gap-3 animate-fade-in-up">
+                                            <h1 className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#1a365d] to-[#2d5c8a] dark:from-white dark:to-gray-300 tracking-tight">
+                                                {formatCurrency(convertedTotalAssets, currency.code, language.code)}
+                                            </h1>
+                                            <span className="px-2 py-1 rounded-md bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-bold flex items-center transform translate-y-[-10px]">
+                                                <i className="fas fa-arrow-up mr-1"></i> 2.4%
+                                            </span>
+                                        </div>
+                                    )}
                                 </div>
+                                
+                                {/* Advanced Eye Toggle */}
+                                <button 
+                                    onClick={toggleBalance}
+                                    className="group relative w-10 h-10 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 border border-white/10 transition-all active:scale-90 focus:outline-none"
+                                    aria-label="Toggle Balance Privacy"
+                                >
+                                    <div className={`relative flex items-center justify-center transition-transform duration-300 ${eyeAnimating ? 'scale-y-0' : 'scale-y-100'}`}>
+                                        <i className={`fas ${isBalanceHidden ? 'fa-eye-slash' : 'fa-eye'} text-lg text-gray-400 group-hover:text-[#e6b325] transition-colors`}></i>
+                                        <div className={`absolute w-full h-full rounded-full border-2 border-[#e6b325]/0 group-hover:border-[#e6b325]/30 transition-all animate-ping opacity-0 group-hover:opacity-100`}></div>
+                                    </div>
+                                </button>
                             </div>
-                            <button className="mt-4 md:mt-0 text-sm font-semibold text-[#1a365d] dark:text-[#e6b325] hover:underline flex items-center gap-2">
-                                View Analysis <i className="fas fa-chevron-right text-xs"></i>
-                            </button>
                         </div>
-                        
-                        <PremiumCardsCarousel />
+
+                        {/* Right: Executive Panel */}
+                        <div className="hidden lg:block">
+                            <ExecutiveStatusPanel />
+                        </div>
                     </div>
+                    
+                    <PremiumCardsCarousel />
 
                     {/* Quick Actions */}
                     <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-4">

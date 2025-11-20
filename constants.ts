@@ -6,6 +6,8 @@
 
 
 
+
+
 import type {
     Feature,
     Testimonial,
@@ -299,9 +301,27 @@ export const CRYPTO_HOLDINGS: CryptoHolding[] = [
 ];
 
 export const CHARITIES: Charity[] = [
-    { id: 'char-1', name: 'Red Cross', description: 'Disaster relief and humanitarian aid.', logoUrl: 'https://logo.clearbit.com/redcross.org', imageUrl: 'https://images.unsplash.com/photo-1608299307451-2c09ac3674e2?q=80&w=2070&auto=format&fit=crop' },
-    { id: 'char-2', name: 'WWF', description: 'Wildlife conservation and endangered species.', logoUrl: 'https://logo.clearbit.com/worldwildlife.org', imageUrl: 'https://images.unsplash.com/photo-1474511320723-9a56873867b5?q=80&w=2070&auto=format&fit=crop' },
-    { id: 'char-3', name: "Habitat for Humanity", description: 'Building homes and communities.', logoUrl: 'https://logo.clearbit.com/habitat.org', imageUrl: 'https://images.unsplash.com/photo-1594451739028-a6d1f48f6d6c?q=80&w=2070&auto=format&fit=crop' },
+    { 
+        id: 'char-1', 
+        name: 'Red Cross International', 
+        description: 'Delivering vital emergency assistance and disaster relief to vulnerable communities worldwide.', 
+        logoUrl: 'https://logo.clearbit.com/redcross.org', 
+        imageUrl: 'https://images.unsplash.com/photo-1599063771526-92d019e86782?q=80&w=2574&auto=format&fit=crop' 
+    },
+    { 
+        id: 'char-2', 
+        name: 'World Wildlife Fund', 
+        description: 'Protecting the future of nature. Conserving biodiversity and reducing humanity\'s footprint.', 
+        logoUrl: 'https://logo.clearbit.com/worldwildlife.org', 
+        imageUrl: 'https://images.unsplash.com/photo-1504826260979-242151ee45b7?q=80&w=2232&auto=format&fit=crop' 
+    },
+    { 
+        id: 'char-3', 
+        name: "Habitat for Humanity", 
+        description: 'Building strength, stability, and self-reliance through affordable shelter and community development.', 
+        logoUrl: 'https://logo.clearbit.com/habitat.org', 
+        imageUrl: 'https://images.unsplash.com/photo-1444419988131-046ed4e5ffd6?q=80&w=2070&auto=format&fit=crop' 
+    },
 ];
 
 export const DONATION_HISTORY: Donation[] = [

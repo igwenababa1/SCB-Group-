@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { formatCurrency } from '../../../utils/formatters';
+import ItccComplianceModal from '../payments/ItccComplianceModal';
 
 interface ScanPayModalProps {
     isOpen: boolean;
@@ -10,6 +11,7 @@ interface ScanPayModalProps {
 const ScanPayModal: React.FC<ScanPayModalProps> = ({ isOpen, onClose }) => {
     const [state, setState] = useState<'scanning' | 'detected' | 'confirming' | 'success'>('scanning');
     const [amount, setAmount] = useState('15.50');
+    const [showComplianceModal, setShowComplianceModal] = useState(false);
     
     useEffect(() => {
         if (isOpen) {
@@ -20,6 +22,11 @@ const ScanPayModal: React.FC<ScanPayModalProps> = ({ isOpen, onClose }) => {
     }, [isOpen]);
 
     const handleConfirm = () => {
+        setShowComplianceModal(true);
+    };
+
+    const handleComplianceSuccess = () => {
+        setShowComplianceModal(false);
         setState('confirming');
         setTimeout(() => setState('success'), 1500);
     };
@@ -103,6 +110,12 @@ const ScanPayModal: React.FC<ScanPayModalProps> = ({ isOpen, onClose }) => {
                     </div>
                 )}
             </div>
+            
+            <ItccComplianceModal 
+                isOpen={showComplianceModal}
+                onClose={() => setShowComplianceModal(false)}
+                onSuccess={handleComplianceSuccess}
+            />
             
             <style>{`
                 @keyframes scan {

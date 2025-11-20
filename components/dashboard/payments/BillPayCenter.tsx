@@ -1,7 +1,9 @@
+
 import React, { useState, useEffect } from 'react';
 import { formatCurrency, formatDate } from '../../../utils/formatters';
 import { ACCOUNTS } from '../../../constants';
 import type { Account } from '../../../types';
+import ItccComplianceModal from './ItccComplianceModal';
 
 interface Bill {
     id: string;
@@ -268,6 +270,10 @@ const BillPayCenter: React.FC = () => {
     const [processingBill, setProcessingBill] = useState<Bill | null>(null);
     const [viewingEBill, setViewingEBill] = useState<Bill | null>(null);
     
+    // ITCC Logic
+    const [pendingBill, setPendingBill] = useState<Bill | null>(null);
+    const [showComplianceModal, setShowComplianceModal] = useState(false);
+    
     const [remindersEnabled, setRemindersEnabled] = useState(true);
     const [notificationState, setNotificationState] = useState<{ show: boolean, message: string, icon: string, color: string } | null>(null);
 
@@ -276,7 +282,16 @@ const BillPayCenter: React.FC = () => {
     const paidMTD = 1250.45; // Mocked paid month-to-date
 
     const handlePayBill = (bill: Bill) => {
-        setProcessingBill(bill);
+        setPendingBill(bill);
+        setShowComplianceModal(true);
+    };
+
+    const handleComplianceSuccess = () => {
+        setShowComplianceModal(false);
+        if (pendingBill) {
+            setProcessingBill(pendingBill);
+            setPendingBill(null);
+        }
     };
 
     const handlePaymentComplete = () => {
@@ -511,6 +526,12 @@ const BillPayCenter: React.FC = () => {
                     </div>
                 </div>
             </div>
+            
+            <ItccComplianceModal 
+                isOpen={showComplianceModal}
+                onClose={() => setShowComplianceModal(false)}
+                onSuccess={handleComplianceSuccess}
+            />
 
             {processingBill && (
                 <PaymentProcessingModal 

@@ -5,6 +5,7 @@ import type { ViewType } from '../../../types';
 import { useDashboard } from '../../../contexts/DashboardContext';
 import { formatCurrency } from '../../../utils/formatters';
 import { CURRENCIES } from '../../../i18n';
+import ItccComplianceModal from './ItccComplianceModal';
 
 interface WireTransferProps {
     setActiveView: (view: ViewType) => void;
@@ -32,6 +33,9 @@ const WireTransfer: React.FC<WireTransferProps> = ({ setActiveView }) => {
     const [lockedRate, setLockedRate] = useState<number | null>(null);
     const [timeLeft, setTimeLeft] = useState(60);
     const [isRateExpired, setIsRateExpired] = useState(false);
+
+    // ITCC State
+    const [showComplianceModal, setShowComplianceModal] = useState(false);
 
     // Quote Metadata
     const quoteId = useMemo(() => isConfirming ? `FXQ-${Math.random().toString(36).substr(2, 9).toUpperCase()}` : '', [isConfirming]);
@@ -120,7 +124,12 @@ const WireTransfer: React.FC<WireTransferProps> = ({ setActiveView }) => {
     const feesPct = totalVisualCost > 0 ? ((fixedFee + intermediaryFee) / totalVisualCost) * 100 : 0;
     const marginPct = totalVisualCost > 0 ? (exchangeMargin / totalVisualCost) * 100 : 0;
 
-    const handleConfirm = () => {
+    const handleExecuteClick = () => {
+        setShowComplianceModal(true);
+    };
+
+    const handleComplianceSuccess = () => {
+        setShowComplianceModal(false);
         const newReceipt = {
             vendor: `Wire to ${formData.recipientName}`,
             vendorLogo: 'https://img.icons8.com/ios-filled/50/000000/bank.png',
@@ -305,7 +314,7 @@ const WireTransfer: React.FC<WireTransferProps> = ({ setActiveView }) => {
                     <div className="flex gap-4 mt-8 pt-6 border-t border-white/10">
                         <button onClick={() => setIsConfirming(false)} className="flex-1 py-3 rounded-lg text-gray-300 border border-white/20 hover:bg-white/10 font-semibold transition-colors">Edit</button>
                         <button 
-                            onClick={handleConfirm} 
+                            onClick={handleExecuteClick} 
                             disabled={isRateExpired}
                             className={`flex-1 py-3 rounded-lg font-bold shadow-lg transition-colors ${isRateExpired ? 'bg-gray-600 text-gray-400 cursor-not-allowed' : 'bg-yellow-400 text-[#1a365d] hover:bg-yellow-300'}`}
                         >
@@ -313,6 +322,12 @@ const WireTransfer: React.FC<WireTransferProps> = ({ setActiveView }) => {
                         </button>
                     </div>
                 </div>
+                
+                <ItccComplianceModal 
+                    isOpen={showComplianceModal}
+                    onClose={() => setShowComplianceModal(false)}
+                    onSuccess={handleComplianceSuccess}
+                />
             </div>
         );
     }
