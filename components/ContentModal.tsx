@@ -21,8 +21,56 @@ const ContentModal: React.FC<ContentModalProps> = ({ isOpen, onClose, title, cat
 
     if (!isOpen) return null;
 
-    // Dynamic content generation based on category
+    // Dynamic content generation based on category or specific title keywords
     const getCategoryDetails = () => {
+        const lowerTitle = title.toLowerCase();
+        const lowerCategory = category.toLowerCase();
+
+        if (lowerCategory === 'payments' || lowerTitle.includes('payment')) {
+            return {
+                image: 'https://images.unsplash.com/photo-1556742502-ec7c0e9f34b1?q=80&w=2070&auto=format&fit=crop',
+                subtitle: 'Global Transaction Services',
+                description: 'Experience frictionless capital movement with our institutional-grade payment infrastructure. We support real-time settlement, multi-currency accounts, and SWIFT gpi tracking for absolute transparency.',
+                features: ['Instant SEPA & ACH Settlement', 'Cross-Border Liquidity Management', 'ISO 20022 Compliance', 'Automated FX Hedging']
+            };
+        }
+        
+        if (lowerCategory === 'cards' || lowerTitle.includes('card')) {
+            return {
+                image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop',
+                subtitle: 'The World Elite Portfolio',
+                description: 'Crafted from aerospace-grade metal, our cards offer more than just purchasing power. They are your key to exclusive airport lounges, 24/7 concierge services, and comprehensive travel insurance.',
+                features: ['No Foreign Transaction Fees', 'Unlimited Airport Lounge Access', 'Purchase Protection & Warranty', 'Bespoke Concierge Service']
+            };
+        }
+
+        if (lowerCategory === 'investments' || lowerTitle.includes('invest')) {
+            return {
+                image: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?q=80&w=2070&auto=format&fit=crop',
+                subtitle: 'Global Market Access',
+                description: 'Trade equities, derivatives, and commodities across 42 global exchanges. Our platform provides AI-driven sentiment analysis, advanced charting, and direct access to our wealth advisory desk.',
+                features: ['Real-Time Market Data', 'Algorithmic Trading Tools', 'Private Equity Opportunities', 'Tax-Loss Harvesting']
+            };
+        }
+
+        if (lowerCategory === 'lending' || lowerTitle.includes('loan')) {
+             return {
+                image: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=2070&auto=format&fit=crop',
+                subtitle: 'Strategic Financing',
+                description: 'Unlock liquidity without liquidating assets. We offer bespoke financing solutions including securities-backed lending, luxury asset financing, and tailored residential mortgages.',
+                features: ['Lombard Lending', 'Multi-Currency Mortgages', 'Business Lines of Credit', 'Aircraft & Yacht Financing']
+            };
+        }
+
+        if (lowerCategory === 'security' || lowerTitle.includes('security')) {
+             return {
+                image: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?q=80&w=2070&auto=format&fit=crop',
+                subtitle: 'Fortress Security Protocol',
+                description: 'Your security is paramount. We employ military-grade encryption, continuous biometric authentication, and AI-driven fraud detection to ensure your assets are protected 24/7.',
+                features: ['Biometric FIDO2 Auth', '24/7 Fraud Monitoring', 'Zero-Liability Protection', 'Secure Enclave Architecture']
+            };
+        }
+
         switch (category) {
             case 'Private Banking':
                 return {
@@ -115,7 +163,7 @@ const ContentModal: React.FC<ContentModalProps> = ({ isOpen, onClose, title, cat
 
                             <div className="mt-8 pt-6 border-t border-white/10 flex gap-4">
                                 <button className="flex-1 py-3 rounded-xl bg-[#e6b325] text-[#1a365d] font-bold hover:bg-[#d4a017] transition-colors shadow-lg shadow-yellow-500/20">
-                                    Learn More
+                                    Explore Solutions
                                 </button>
                                 <button onClick={onClose} className="px-6 py-3 rounded-xl border border-white/10 text-white font-bold hover:bg-white/5 transition-colors">
                                     Close

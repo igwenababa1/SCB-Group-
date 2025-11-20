@@ -30,9 +30,9 @@ const Header: React.FC = () => {
         setModalOpen(true);
     };
 
-    const NavLink: React.FC<{ href: string; children: React.ReactNode; badge?: string }> = ({ href, children, badge }) => (
-        <a 
-            href={href} 
+    const NavLink: React.FC<{ children: React.ReactNode; badge?: string; onClick: () => void }> = ({ children, badge, onClick }) => (
+        <button 
+            onClick={onClick} 
             className="group relative flex items-center h-full px-2 font-medium text-sm text-gray-200 hover:text-white transition-colors duration-300"
         >
             <span>{children}</span>
@@ -42,7 +42,7 @@ const Header: React.FC = () => {
                 </span>
             )}
             <span className="absolute bottom-0 left-0 w-full h-0.5 bg-[#e6b325] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
-        </a>
+        </button>
     );
 
     const TopBarLink: React.FC<{ label: string; title: string; category: string; active?: boolean }> = ({ label, title, category, active }) => (
@@ -105,11 +105,11 @@ const Header: React.FC = () => {
 
                         {/* Desktop Menu */}
                         <nav className="hidden lg:flex items-center gap-8 h-full">
-                            <NavLink href="#payments">Payments</NavLink>
-                            <NavLink href="#cards">Cards</NavLink>
-                            <NavLink href="#investments" badge="Hot">Investments</NavLink>
-                            <NavLink href="#loans">Lending</NavLink>
-                            <NavLink href="#security">Security</NavLink>
+                            <NavLink onClick={() => handleContentClick({ preventDefault: () => {} } as any, 'Global Payments', 'Payments')}>Payments</NavLink>
+                            <NavLink onClick={() => handleContentClick({ preventDefault: () => {} } as any, 'Premium Cards', 'Cards')}>Cards</NavLink>
+                            <NavLink onClick={() => handleContentClick({ preventDefault: () => {} } as any, 'Wealth & Investing', 'Investments')} badge="Hot">Investments</NavLink>
+                            <NavLink onClick={() => handleContentClick({ preventDefault: () => {} } as any, 'Lending Solutions', 'Lending')}>Lending</NavLink>
+                            <NavLink onClick={() => handleContentClick({ preventDefault: () => {} } as any, 'Cybersecurity Center', 'Security')}>Security</NavLink>
                         </nav>
 
                         {/* Actions */}
@@ -161,10 +161,10 @@ const Header: React.FC = () => {
                 {mobileMenuOpen && (
                     <div className="lg:hidden absolute top-full left-0 right-0 bg-[#0f172a] border-t border-white/10 p-6 shadow-2xl animate-fade-in-section">
                         <nav className="flex flex-col gap-4">
-                            <a href="#payments" className="text-gray-300 hover:text-[#e6b325] font-medium py-2 border-b border-white/5">Payments</a>
-                            <a href="#cards" className="text-gray-300 hover:text-[#e6b325] font-medium py-2 border-b border-white/5">Cards</a>
-                            <a href="#investments" className="text-gray-300 hover:text-[#e6b325] font-medium py-2 border-b border-white/5">Investments</a>
-                            <a href="#security" className="text-gray-300 hover:text-[#e6b325] font-medium py-2 border-b border-white/5">Security</a>
+                            <button onClick={() => handleContentClick({ preventDefault: () => {} } as any, 'Global Payments', 'Payments')} className="text-gray-300 hover:text-[#e6b325] font-medium py-2 border-b border-white/5 text-left">Payments</button>
+                            <button onClick={() => handleContentClick({ preventDefault: () => {} } as any, 'Premium Cards', 'Cards')} className="text-gray-300 hover:text-[#e6b325] font-medium py-2 border-b border-white/5 text-left">Cards</button>
+                            <button onClick={() => handleContentClick({ preventDefault: () => {} } as any, 'Wealth & Investing', 'Investments')} className="text-gray-300 hover:text-[#e6b325] font-medium py-2 border-b border-white/5 text-left">Investments</button>
+                            <button onClick={() => handleContentClick({ preventDefault: () => {} } as any, 'Cybersecurity Center', 'Security')} className="text-gray-300 hover:text-[#e6b325] font-medium py-2 border-b border-white/5 text-left">Security</button>
                             <div className="pt-4 flex flex-col gap-3">
                                  <button onClick={showOpenAccount} className="w-full py-3 rounded-lg bg-white/5 text-white border border-white/10 font-bold text-sm">Open Account</button>
                                  <button onClick={showLogin} className="w-full py-3 rounded-lg bg-[#e6b325] text-[#1a365d] font-bold text-sm">Login</button>
