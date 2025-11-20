@@ -1,4 +1,6 @@
 
+
+
 import React, { useState } from 'react';
 import type { ViewType, LoanApplicationData } from '../../types';
 import { formatCurrency } from '../../utils/formatters';
@@ -48,8 +50,8 @@ const FormSelect: React.FC<React.SelectHTMLAttributes<HTMLSelectElement> & { lab
 const LoanApplicationView: React.FC<LoanApplicationViewProps> = ({ setActiveView }) => {
     const [step, setStep] = useState(1);
     const [formData, setFormData] = useState<LoanApplicationData>({
-        loanType: '', amount: '', purpose: '', fullName: 'Alex P. Byrne', email: 'alex.byrne@example.com',
-        phone: '+1 (555) 123-4567', address: '123 Banking Ave, New York, NY 10001', dob: '',
+        loanType: '', amount: '', purpose: '', fullName: 'Rodriguez Garcia', email: 'mrikimc@gmail.com',
+        phone: '+1 (250) 244-3676', address: 'North Mills Avenue, Orlando, Florida, USA', dob: '',
         employmentStatus: '', annualIncome: ''
     });
     const [errors, setErrors] = useState<Partial<Record<keyof LoanApplicationData, string>>>({});

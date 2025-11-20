@@ -1,3 +1,4 @@
+
 import React, { useContext, useState, useMemo } from 'react';
 import { AppContext } from '../../App';
 import type { ViewType, TranslationKey } from '../../types';
@@ -41,9 +42,9 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ activeView, setActive
 
     const getGreeting = () => {
         const hour = new Date().getHours();
-        if (hour < 12) return "Good morning, Alex!";
-        if (hour < 18) return "Good afternoon, Alex!";
-        return "Good evening, Alex!";
+        if (hour < 12) return "Good morning, Rodriguez!";
+        if (hour < 18) return "Good afternoon, Rodriguez!";
+        return "Good evening, Rodriguez!";
     };
     
     // In a real app, this insight would be dynamically generated.
@@ -67,7 +68,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ activeView, setActive
         }
         const { title: titleKey, subtitle: subtitleKey } = viewTitleKeys[activeView] || viewTitleKeys.dashboard;
         return {
-            title: t(titleKey as TranslationKey, { name: "Alex!" }),
+            title: t(titleKey as TranslationKey, { name: "Rodriguez!" }),
             subtitle: <p className="text-sm text-gray-500 dark:text-gray-400">{t(subtitleKey as TranslationKey)}</p>,
         };
     };
@@ -139,7 +140,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ activeView, setActive
                             <img src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?q=80&w=2080&auto-format&fit=crop" alt="User" className="w-10 h-10 rounded-full" />
                             <div>
                                 <div className="flex items-center gap-1.5">
-                                    <p className="font-semibold text-gray-800 dark:text-gray-100">Alex Byrne</p>
+                                    <p className="font-semibold text-gray-800 dark:text-gray-100">Rodriguez Garcia</p>
                                     <span title="Verified Client">
                                         <i className="fas fa-check-circle text-blue-500 text-sm"></i>
                                     </span>

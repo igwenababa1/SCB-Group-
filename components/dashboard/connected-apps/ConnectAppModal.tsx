@@ -1,4 +1,6 @@
 
+
+
 import React, { useState, useEffect } from 'react';
 import type { ConnectedApp } from '../../../types';
 
@@ -139,7 +141,7 @@ const ConnectAppModal: React.FC<ConnectAppModalProps> = ({ isOpen, onClose, app,
                                 <p className="text-xs text-gray-500">Enter your credentials to link this account.</p>
                             </div>
                             <div className="space-y-4">
-                                <input type="text" defaultValue="alex.byrne@example.com" className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 outline-none dark:text-white" disabled />
+                                <input type="text" defaultValue="mrikimc@gmail.com" className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 outline-none dark:text-white" disabled />
                                 <input type="password" placeholder="Password" className="w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 outline-none dark:text-white" autoFocus />
                             </div>
                             <button onClick={handleLogin} className="w-full mt-6 py-3 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-bold shadow-lg transition-colors">

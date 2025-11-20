@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Sidebar from '../components/dashboard/Sidebar';
 import DashboardHeader from '../components/dashboard/DashboardHeader';
 import DashboardView from './dashboard/DashboardView';
@@ -23,8 +23,19 @@ import CongratulationsView from './dashboard/CongratulationsView';
 import type { ViewType } from '../types';
 import { DashboardContextProvider } from '../contexts/DashboardContext';
 
+const VIEW_STORAGE_KEY = 'scb_dashboard_view';
+
 const DigitalBankingPage: React.FC = () => {
-    const [activeView, setActiveView] = useState<ViewType>('recurring-payments');
+    // Initialize state from local storage if available, otherwise default to 'dashboard'
+    const [activeView, setActiveView] = useState<ViewType>(() => {
+        const savedView = localStorage.getItem(VIEW_STORAGE_KEY);
+        return (savedView as ViewType) || 'recurring-payments';
+    });
+
+    // Save active view to local storage whenever it changes
+    useEffect(() => {
+        localStorage.setItem(VIEW_STORAGE_KEY, activeView);
+    }, [activeView]);
 
     const renderView = () => {
         switch (activeView) {

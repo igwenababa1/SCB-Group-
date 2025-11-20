@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import NetWorth from '../../components/dashboard/NetWorth';
 import AccountCardsGrid from '../../components/dashboard/congratulations/AccountCardsGrid';
@@ -18,7 +19,7 @@ const CongratulationsView: React.FC = () => {
         <div className="min-h-full bg-gray-50 dark:bg-slate-900 p-8 space-y-8">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
                 <div>
-                    <h1 className="text-3xl font-bold text-gray-800 dark:text-white">Congratulations, Alex!</h1>
+                    <h1 className="text-3xl font-bold text-gray-800 dark:text-white">Congratulations, Rodriguez!</h1>
                     <p className="text-gray-500 dark:text-gray-400">You're building a strong financial future. Here's your complete snapshot.</p>
                 </div>
                 <div className="flex items-center gap-4 mt-4 md:mt-0">
