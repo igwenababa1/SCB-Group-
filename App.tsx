@@ -9,6 +9,7 @@ import OpenAccountPage from './pages/OpenAccountPage';
 import SecurityCheckPage from './pages/SecurityCheckPage';
 import GoodbyePage from './pages/GoodbyePage';
 import SessionRestoreModal from './components/SessionRestoreModal';
+import AutoLogoutHandler from './components/AutoLogoutHandler';
 import { LanguageProvider, CurrencyProvider, ThemeProvider } from './contexts/GlobalSettingsContext';
 
 interface AppContextType {
@@ -125,7 +126,9 @@ const App: React.FC = () => {
         if (isLoggedIn) {
             return (
                 <AppContext.Provider value={contextValue}>
-                    <DigitalBankingPage />
+                    <AutoLogoutHandler>
+                        <DigitalBankingPage />
+                    </AutoLogoutHandler>
                 </AppContext.Provider>
             );
         }

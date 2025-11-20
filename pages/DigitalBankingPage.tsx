@@ -29,7 +29,7 @@ const DigitalBankingPage: React.FC = () => {
     // Initialize state from local storage if available, otherwise default to 'dashboard'
     const [activeView, setActiveView] = useState<ViewType>(() => {
         const savedView = localStorage.getItem(VIEW_STORAGE_KEY);
-        return (savedView as ViewType) || 'recurring-payments';
+        return (savedView as ViewType) || 'dashboard';
     });
 
     // Save active view to local storage whenever it changes

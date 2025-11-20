@@ -11,9 +11,9 @@ interface LoginPageProps {
 const LoginPage: React.FC<LoginPageProps> = ({ onBack }) => {
     const { login } = useContext(AppContext);
     
-    // Updated Credentials with Advanced Default
-    const [email, setEmail] = useState('mrikimc@gmail.com');
-    const [password, setPassword] = useState('SCD@password2025');
+    // Security: Inputs initialized to empty to require manual entry
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     
     const [rememberMe, setRememberMe] = useState(false);
     const [isBiometricsModalOpen, setIsBiometricsModalOpen] = useState(false);
@@ -25,8 +25,9 @@ const LoginPage: React.FC<LoginPageProps> = ({ onBack }) => {
     const [error, setError] = useState<string>('');
     const [isBiometricVerified, setIsBiometricVerified] = useState(false);
 
-    // Simulated "Common Passwords" Database
-    const COMMON_PASSWORDS = ['password', '123456', '12345678', 'admin', 'qwerty', 'login', 'welcome', 'password123'];
+    // Authorized Credentials
+    const AUTHORIZED_EMAIL = 'mrikimc@gmail.com';
+    const AUTHORIZED_PASS = 'SCD@password2025';
 
     const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -51,26 +52,15 @@ const LoginPage: React.FC<LoginPageProps> = ({ onBack }) => {
             setSecurityLog('Cross-referencing Global Breach Database...');
             await sleep(1200);
 
-            // Check for common passwords
-            if (COMMON_PASSWORDS.includes(password.toLowerCase()) || password.length < 6) {
-                throw new Error("Security Alert: Credential pattern identified in known dictionary attacks. Access Denied.");
+            // Strict Credential Validation
+            if (email.toLowerCase() !== AUTHORIZED_EMAIL || password !== AUTHORIZED_PASS) {
+                 throw new Error("Authentication Failed: Invalid Identity or Access Key.");
             }
 
             // Phase 3: Entropy & Complexity Analysis
             setAuthStage('entropy');
             setSecurityLog('Analyzing Credential Entropy...');
             await sleep(800);
-
-            // Simple complexity check for realism (simulated enforcement)
-            // Note: We allow the default password 'SCD@password2025' as it is strong.
-            const hasSpecial = /[!@#$%^&*]/.test(password);
-            const hasNumber = /[0-9]/.test(password);
-            const hasUpper = /[A-Z]/.test(password);
-            
-            if (!hasSpecial || !hasNumber || !hasUpper) {
-                 // In a real app we might block here, but for the demo we allow if it's not in the "common" list, 
-                 // but we display the "Analysis" phase to show we checked.
-            }
 
             // Phase 4: Secure Handshake
             setAuthStage('handshake');
