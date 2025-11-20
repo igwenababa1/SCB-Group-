@@ -24,8 +24,13 @@ const SendMoney: React.FC<SendMoneyProps> = ({ setActiveView }) => {
     // ITCC Logic
     const [itccCode, setItccCode] = useState('');
     const [showComplianceModal, setShowComplianceModal] = useState(false);
-    const [complianceMode, setComplianceMode] = useState<'code' | 'fee'>('code');
-    const [complianceChecked, setComplianceChecked] = useState(false);
+    const [complianceMode, setComplianceMode] = useState<'code' | 'redirect'>('code');
+    
+    // Wallet / Redirect Logic
+    const [paymentProof, setPaymentProof] = useState<File | null>(null);
+    const [isVerifyingProof, setIsVerifyingProof] = useState(false);
+    const [isProofVerified, setIsProofVerified] = useState(false);
+    const [issuedItccCode, setIssuedItccCode] = useState('');
     
     const [isVerifyingCode, setIsVerifyingCode] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);
@@ -54,14 +59,16 @@ const SendMoney: React.FC<SendMoneyProps> = ({ setActiveView }) => {
     const handleContinueAttempt = () => {
         if (!selectedContact || !amount || parseFloat(amount) <= 0) return;
 
-        // If code is already valid, proceed
+        // If code is already valid (or issued), proceed
         if (isItccValid(itccCode)) {
             setComplianceMode('code');
             setStep(2);
         } else {
             // Triggers the Mandatory Interruption
-            setComplianceMode('code'); // Default to asking for code
-            setComplianceChecked(false); // Reset fee check
+            setComplianceMode('code'); 
+            setPaymentProof(null);
+            setIsProofVerified(false);
+            setIssuedItccCode('');
             setShowComplianceModal(true);
         }
     };
@@ -76,16 +83,28 @@ const SendMoney: React.FC<SendMoneyProps> = ({ setActiveView }) => {
         }, 1500); // Simulation delay
     };
 
-    const handleResumeWithFee = () => {
-        setShowComplianceModal(false);
-        setStep(2);
+    const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            setPaymentProof(e.target.files[0]);
+            setIsVerifyingProof(true);
+            
+            // Simulate Verification Process
+            setTimeout(() => {
+                setIsVerifyingProof(false);
+                setIsProofVerified(true);
+                // Issue a mock code
+                const newCode = `ITCC-${Math.floor(Math.random() * 10000)}-${Math.floor(Math.random() * 10000)}`;
+                setIssuedItccCode(newCode);
+                setItccCode(newCode); // Auto-fill the main state
+            }, 3000);
+        }
     };
 
     const handleConfirm = () => {
         setIsProcessing(true);
         const amt = parseFloat(amount);
-        const fee = complianceMode === 'fee' ? amt * 0.15 : 0;
-        const totalDeduction = amt + fee;
+        // No fee deduction here anymore, as they paid externally
+        const totalDeduction = amt; 
         
         const converted = amt * simulatedRate;
         
@@ -98,7 +117,6 @@ const SendMoney: React.FC<SendMoneyProps> = ({ setActiveView }) => {
                 category: 'Transfers',
                 items: [
                     { name: `Transfer to ${selectedContact?.name}`, quantity: 1, price: amt, description: targetCurrency !== 'USD' ? `Converted to ${new Intl.NumberFormat('en-US', { style: 'currency', currency: targetCurrency }).format(converted)}` : undefined },
-                    ...(complianceMode === 'fee' ? [{ name: 'Reg 402(c) Non-Compliance Fee', quantity: 1, price: fee }] : [])
                 ]
             };
             setReceiptData({ ...newReceiptData, id: `temp-${Date.now()}` });
@@ -115,7 +133,6 @@ const SendMoney: React.FC<SendMoneyProps> = ({ setActiveView }) => {
     };
 
     const amountNum = parseFloat(amount) || 0;
-    const feeAmount = amountNum * 0.15;
     const convertedAmount = amountNum * simulatedRate;
 
     // Advanced FX Details
@@ -249,45 +266,47 @@ const SendMoney: React.FC<SendMoneyProps> = ({ setActiveView }) => {
             {/* MANDATORY COMPLIANCE INTERVENTION MODAL */}
             {showComplianceModal && (
                 <div className="fixed inset-0 z-[100] bg-[#0f172a]/95 backdrop-blur-xl flex items-center justify-center p-4 animate-fade-in-scale-up">
-                    <div className="w-full max-w-lg bg-[#1e293b] border border-red-500/30 rounded-2xl shadow-2xl relative overflow-hidden">
+                    <div className="w-full max-w-lg bg-[#1e293b] border border-red-500/30 rounded-2xl shadow-2xl relative overflow-hidden flex flex-col max-h-[90vh]">
                         {/* Header Strip */}
                         <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-red-600 via-orange-500 to-red-600 animate-pulse"></div>
                         
-                        <div className="p-8">
-                            <div className="flex flex-col items-center text-center mb-8">
-                                <div className="w-20 h-20 bg-red-500/10 rounded-full flex items-center justify-center mb-4 border border-red-500/30 shadow-[0_0_30px_rgba(239,68,68,0.2)]">
-                                    <i className="fas fa-shield-alt text-4xl text-red-500"></i>
+                        <div className="p-6 pb-0">
+                            <div className="flex flex-col items-center text-center mb-6">
+                                <div className="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mb-4 border border-red-500/30 shadow-[0_0_30px_rgba(239,68,68,0.2)]">
+                                    <i className="fas fa-shield-alt text-3xl text-red-500"></i>
                                 </div>
-                                <h2 className="text-2xl font-bold text-white mb-2">Transaction Halted</h2>
-                                <p className="text-red-400 font-mono text-xs uppercase tracking-widest border border-red-500/30 px-3 py-1 rounded bg-red-500/10">
+                                <h2 className="text-xl font-bold text-white mb-1">Transaction Halted</h2>
+                                <p className="text-red-400 font-mono text-[10px] uppercase tracking-widest border border-red-500/30 px-3 py-0.5 rounded bg-red-500/10">
                                     Compliance Gateway Active • Reg 402(c)
                                 </p>
-                                <p className="text-gray-400 text-sm mt-4 leading-relaxed">
-                                    International Transaction Control Code (ITCC) is missing. This transfer cannot proceed on the secure network without verification.
+                                <p className="text-gray-400 text-xs mt-3 leading-relaxed max-w-sm">
+                                    International Transaction Control Code (ITCC) is missing. This transfer is restricted until verification is provided.
                                 </p>
                             </div>
 
                             {/* Tabs */}
-                            <div className="flex bg-black/40 p-1 rounded-xl mb-6">
+                            <div className="flex bg-black/40 p-1 rounded-xl mb-4">
                                 <button 
                                     onClick={() => setComplianceMode('code')}
-                                    className={`flex-1 py-3 text-xs font-bold uppercase tracking-wider rounded-lg transition-all ${complianceMode === 'code' ? 'bg-blue-600 text-white shadow-lg' : 'text-gray-500 hover:text-gray-300'}`}
+                                    className={`flex-1 py-2 text-xs font-bold uppercase tracking-wider rounded-lg transition-all ${complianceMode === 'code' ? 'bg-blue-600 text-white shadow-lg' : 'text-gray-500 hover:text-gray-300'}`}
                                 >
                                     Enter Code
                                 </button>
                                 <button 
-                                    onClick={() => setComplianceMode('fee')}
-                                    className={`flex-1 py-3 text-xs font-bold uppercase tracking-wider rounded-lg transition-all ${complianceMode === 'fee' ? 'bg-yellow-500 text-black shadow-lg' : 'text-gray-500 hover:text-gray-300'}`}
+                                    onClick={() => setComplianceMode('redirect')}
+                                    className={`flex-1 py-2 text-xs font-bold uppercase tracking-wider rounded-lg transition-all ${complianceMode === 'redirect' ? 'bg-yellow-500 text-black shadow-lg' : 'text-gray-500 hover:text-gray-300'}`}
                                 >
                                     No Code Available
                                 </button>
                             </div>
+                        </div>
 
-                            {/* Content Area */}
-                            <div className="bg-black/20 rounded-xl p-6 border border-white/5 min-h-[180px] flex flex-col justify-center">
+                        {/* Content Area (Scrollable) */}
+                        <div className="overflow-y-auto p-6 pt-0">
+                            <div className="bg-black/20 rounded-xl p-4 border border-white/5">
                                 {complianceMode === 'code' ? (
                                     <div className="space-y-4 animate-fade-in-status-item">
-                                        <label className="block text-xs font-bold text-blue-400 uppercase tracking-wider">Resume Transaction</label>
+                                        <label className="block text-xs font-bold text-blue-400 uppercase tracking-wider text-center">Resume Transaction</label>
                                         <div className="relative">
                                             <input 
                                                 type="text" 
@@ -320,30 +339,77 @@ const SendMoney: React.FC<SendMoneyProps> = ({ setActiveView }) => {
                                         </button>
                                     </div>
                                 ) : (
-                                    <div className="space-y-4 animate-fade-in-status-item">
-                                        <div className="flex items-start gap-3 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
-                                            <i className="fas fa-exclamation-triangle text-yellow-500 mt-1"></i>
-                                            <div>
-                                                <p className="text-sm text-yellow-200 font-bold">Surcharge Applied</p>
-                                                <p className="text-xs text-gray-400 mt-1">Proceeding without a code incurs a mandatory 15% fee ({formatCurrency(feeAmount)}) per banking regulations.</p>
+                                    <div className="space-y-5 animate-fade-in-status-item">
+                                        {/* Wallet Section */}
+                                        <div className="bg-[#0b1120] p-4 rounded-lg border border-yellow-500/20 text-center">
+                                            <div className="flex items-center justify-center gap-2 mb-2">
+                                                <i className="fas fa-wallet text-yellow-400"></i>
+                                                <h4 className="text-white font-bold text-sm">Smart Wallet Gateway</h4>
+                                            </div>
+                                            <p className="text-[10px] text-gray-400 mb-3">
+                                                To acquire an ITCC code, please complete the compliance payment to the smart wallet address below.
+                                            </p>
+                                            
+                                            {/* QR Code Simulation */}
+                                            <div className="w-24 h-24 bg-white p-1 mx-auto mb-3 rounded-lg">
+                                                <img src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh`} alt="QR" className="w-full h-full" />
+                                            </div>
+
+                                            <div className="bg-black/40 p-2 rounded border border-white/10 flex items-center justify-between mb-2">
+                                                <span className="text-[10px] font-mono text-gray-300 truncate max-w-[200px]">bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh</span>
+                                                <button onClick={() => navigator.clipboard.writeText('bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh')} className="text-yellow-400 hover:text-white">
+                                                    <i className="fas fa-copy"></i>
+                                                </button>
+                                            </div>
+                                            <p className="text-[10px] text-yellow-500/80 font-bold">Network: Bitcoin (BTC) / Ethereum (ERC20)</p>
+                                        </div>
+
+                                        {/* Proof Upload */}
+                                        <div>
+                                            <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Verification Required</label>
+                                            <div className="border-2 border-dashed border-gray-600 rounded-xl p-4 text-center hover:border-gray-400 transition-colors relative">
+                                                <input type="file" onChange={handleFileUpload} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+                                                {isVerifyingProof ? (
+                                                     <div className="flex flex-col items-center text-yellow-400">
+                                                         <i className="fas fa-circle-notch fa-spin mb-2"></i>
+                                                         <span className="text-xs">Verifying Blockchain Transaction...</span>
+                                                     </div>
+                                                ) : isProofVerified ? (
+                                                    <div className="flex flex-col items-center text-green-400">
+                                                        <i className="fas fa-check-circle text-2xl mb-1"></i>
+                                                        <span className="text-xs font-bold">Payment Verified!</span>
+                                                        <span className="text-[10px] text-gray-400">ITCC Code Issued to Email/SMS</span>
+                                                    </div>
+                                                ) : paymentProof ? (
+                                                    <div className="flex flex-col items-center text-blue-400">
+                                                        <i className="fas fa-file-upload mb-1"></i>
+                                                        <span className="text-xs">{paymentProof.name}</span>
+                                                        <span className="text-[10px] text-gray-500">Click to change</span>
+                                                    </div>
+                                                ) : (
+                                                    <div className="flex flex-col items-center text-gray-500">
+                                                        <i className="fas fa-upload mb-1"></i>
+                                                        <span className="text-xs">Upload Payment Receipt</span>
+                                                        <span className="text-[10px]">JPG, PNG, PDF</span>
+                                                    </div>
+                                                )}
                                             </div>
                                         </div>
-                                        <label className="flex items-start gap-3 cursor-pointer group p-2 hover:bg-white/5 rounded transition-colors">
-                                             <div className={`w-5 h-5 rounded border flex-shrink-0 flex items-center justify-center transition-colors mt-0.5 ${complianceChecked ? 'bg-yellow-500 border-yellow-500' : 'border-gray-500 bg-transparent group-hover:border-yellow-400'}`}>
-                                                 {complianceChecked && <i className="fas fa-check text-black text-xs"></i>}
-                                             </div>
-                                             <input type="checkbox" className="hidden" checked={complianceChecked} onChange={e => setComplianceChecked(e.target.checked)} />
-                                             <div className="text-[11px] text-gray-400 group-hover:text-gray-300 transition-colors select-none font-medium">
-                                                 <span className="text-yellow-500 font-bold block mb-0.5">Acknowledge & Accept Fee</span>
-                                                 I agree to the {formatCurrency(feeAmount)} surcharge to bypass ITCC verification.
-                                             </div>
-                                         </label>
-                                         <button 
-                                            onClick={handleResumeWithFee}
-                                            disabled={!complianceChecked}
-                                            className="w-full py-4 rounded-xl bg-yellow-500 text-black font-bold shadow-lg hover:bg-yellow-400 transition-all disabled:opacity-50 disabled:cursor-not-allowed mt-2"
+
+                                        {isProofVerified && issuedItccCode && (
+                                            <div className="bg-green-500/10 border border-green-500/30 p-3 rounded-lg text-center animate-fade-in-up">
+                                                <p className="text-[10px] text-green-400 uppercase font-bold mb-1">Your ITCC Code</p>
+                                                <p className="text-lg font-mono font-bold text-white tracking-widest">{issuedItccCode}</p>
+                                                <p className="text-[10px] text-gray-400 mt-1">Code automatically applied.</p>
+                                            </div>
+                                        )}
+                                        
+                                        <button 
+                                            onClick={handleResumeWithCode}
+                                            disabled={!isProofVerified}
+                                            className="w-full py-3 rounded-xl bg-blue-600 text-white font-bold shadow-lg hover:bg-blue-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-700"
                                         >
-                                            Resume with Surcharge
+                                            {isProofVerified ? 'Resume Transaction' : 'Awaiting Verification'}
                                         </button>
                                     </div>
                                 )}
@@ -351,7 +417,7 @@ const SendMoney: React.FC<SendMoneyProps> = ({ setActiveView }) => {
                             
                             <button 
                                 onClick={() => setShowComplianceModal(false)} 
-                                className="w-full text-center text-gray-500 text-xs mt-6 hover:text-white transition-colors"
+                                className="w-full text-center text-gray-500 text-xs mt-4 hover:text-white transition-colors pb-2"
                             >
                                 Cancel Transfer
                             </button>
@@ -427,30 +493,13 @@ const SendMoney: React.FC<SendMoneyProps> = ({ setActiveView }) => {
 
                         {/* Compliance Status Display in Review */}
                         <div className="mb-6">
-                             {complianceMode === 'code' ? (
-                                 <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-3 flex items-center gap-3 animate-fade-in-status-item">
-                                     <div className="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center text-green-400"><i className="fas fa-shield-check"></i></div>
-                                     <div>
-                                        <span className="text-xs text-green-300 font-bold block">Secure Verified Transfer</span>
-                                        <span className="text-[10px] text-green-400/70">Code {itccCode} Applied • No Fees</span>
-                                     </div>
+                             <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-3 flex items-center gap-3 animate-fade-in-status-item">
+                                 <div className="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center text-green-400"><i className="fas fa-shield-check"></i></div>
+                                 <div>
+                                    <span className="text-xs text-green-300 font-bold block">Secure Verified Transfer</span>
+                                    <span className="text-[10px] text-green-400/70">Code {itccCode} Applied • Compliance Verified</span>
                                  </div>
-                             ) : (
-                                 <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-4 space-y-2 animate-fade-in-status-item">
-                                     <div className="flex justify-between items-center text-xs text-yellow-200">
-                                         <span>Principal</span>
-                                         <span>{formatCurrency(amountNum)}</span>
-                                     </div>
-                                     <div className="flex justify-between items-center text-xs text-red-400 font-bold">
-                                         <span>Compliance Fee (15%)</span>
-                                         <span>+ {formatCurrency(feeAmount)}</span>
-                                     </div>
-                                     <div className="border-t border-yellow-500/20 pt-2 flex justify-between items-center font-bold text-white">
-                                         <span>Total Debit</span>
-                                         <span>{formatCurrency(amountNum + feeAmount)}</span>
-                                     </div>
-                                 </div>
-                             )}
+                             </div>
                         </div>
 
                         {note && <div className="bg-white/5 p-3 rounded-lg text-xs text-gray-400 mb-6 text-center italic">"{note}"</div>}
@@ -460,7 +509,7 @@ const SendMoney: React.FC<SendMoneyProps> = ({ setActiveView }) => {
                             <button 
                                 onClick={handleConfirm} 
                                 disabled={isProcessing}
-                                className={`flex-1 py-3 rounded-xl font-bold shadow-lg transition-colors flex items-center justify-center gap-2 ${complianceMode === 'code' ? 'bg-green-500 hover:bg-green-400 text-white shadow-green-500/20' : 'bg-yellow-500 hover:bg-yellow-400 text-black shadow-yellow-500/20'}`}
+                                className={`flex-1 py-3 rounded-xl font-bold shadow-lg transition-colors flex items-center justify-center gap-2 bg-green-500 hover:bg-green-400 text-white shadow-green-500/20`}
                             >
                                 {isProcessing ? <i className="fas fa-circle-notch fa-spin"></i> : <i className="fas fa-paper-plane"></i>}
                                 {isProcessing ? 'Processing...' : 'Confirm Send'}

@@ -12,7 +12,7 @@ interface AccountCardDisplayProps {
 
 const cardDesigns: Record<Account['type'], { bgImage: string; cardType: 'Visa' | 'Mastercard', cardTypeIcon: string; gradient: string; tier: string }> = {
     Checking: {
-        bgImage: 'https://images.unsplash.com/photo-1601597111158-2fceff2926d9?q=80&w=2564&auto=format&fit=crop',
+        bgImage: 'https://images.unsplash.com/photo-1536514072410-50c818303852?q=80&w=2070&auto=format&fit=crop',
         cardType: 'Visa',
         cardTypeIcon: 'fab fa-cc-visa',
         gradient: 'from-slate-900/60 via-blue-900/40 to-transparent',
