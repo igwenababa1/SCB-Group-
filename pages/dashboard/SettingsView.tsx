@@ -1,12 +1,9 @@
 
-
-import React, { useState, useMemo } from 'react';
-// FIX: Corrected import path
-import { USER_SETTINGS } from '../../constants';
-// FIX: Corrected import path
+import React, { useState, useMemo, useEffect } from 'react';
 import type { UserSettings } from '../../types';
 import { formatDate } from '../../utils/formatters';
 import ChangePasswordModal from '../../components/dashboard/settings/ChangePasswordModal';
+import { bankingSystem } from '../../services/BankingSystem';
 
 type SettingsSection = 'profile' | 'security' | 'notifications';
 
@@ -51,23 +48,31 @@ const timeAgo = (date: string) => {
 
 const SettingsView: React.FC = () => {
     const [activeSection, setActiveSection] = useState<SettingsSection>('security');
-    const [settings, setSettings] = useState<UserSettings>(USER_SETTINGS);
-    const [draftSettings, setDraftSettings] = useState<UserSettings>(USER_SETTINGS);
+    
+    // Load initial state from Banking System
+    const currentUser = bankingSystem.getCurrentUser();
+    const initialSettings = currentUser ? currentUser.settings : null;
+
+    const [settings, setSettings] = useState<UserSettings | null>(initialSettings);
+    const [draftSettings, setDraftSettings] = useState<UserSettings | null>(initialSettings);
     const [showSuccess, setShowSuccess] = useState(false);
     const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
 
     const hasChanges = useMemo(() => JSON.stringify(settings) !== JSON.stringify(draftSettings), [settings, draftSettings]);
     
+    if (!settings || !draftSettings) return <div className="text-white p-8">Loading secure profile...</div>;
+
     const handleProfileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setDraftSettings(s => ({ ...s, profile: { ...s.profile, [e.target.name]: e.target.value } }));
+        setDraftSettings(s => s ? ({ ...s, profile: { ...s.profile, [e.target.name]: e.target.value } }) : null);
     };
 
     const handleSecurityToggle = (key: 'twoFactorAuth' | 'biometricLogin') => {
-        setDraftSettings(s => ({ ...s, security: { ...s.security, [key]: !s.security[key] } }));
+        setDraftSettings(s => s ? ({ ...s, security: { ...s.security, [key]: !s.security[key] } }) : null);
     };
     
     const handleNotificationToggle = (category: keyof UserSettings['notifications']['alerts'] | 'communication', channel: 'email' | 'sms' | 'push') => {
         setDraftSettings(s => {
+            if (!s) return null;
             if (category === 'communication') {
                 return {
                     ...s,
@@ -106,10 +111,13 @@ const SettingsView: React.FC = () => {
         recurringActivity: "Recurring Payments & Automations"
     };
 
-    const handleSaveChanges = () => {
-        setSettings(draftSettings);
-        setShowSuccess(true);
-        setTimeout(() => setShowSuccess(false), 2500);
+    const handleSaveChanges = async () => {
+        if (draftSettings) {
+            await bankingSystem.updateProfile(draftSettings);
+            setSettings(draftSettings);
+            setShowSuccess(true);
+            setTimeout(() => setShowSuccess(false), 2500);
+        }
     };
 
     const handleCancelChanges = () => {
@@ -118,13 +126,13 @@ const SettingsView: React.FC = () => {
 
     const handleSignOutDevice = (deviceId: string) => {
         if (window.confirm("This device will be removed from your managed list when you save changes. Are you sure?")) {
-            setDraftSettings(s => ({
+            setDraftSettings(s => s ? ({
                 ...s,
                 security: {
                     ...s.security,
                     managedDevices: s.security.managedDevices.filter(d => d.id !== deviceId),
                 }
-            }));
+            }) : null);
         }
     };
     

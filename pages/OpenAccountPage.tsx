@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import { bankingSystem } from '../services/BankingSystem';
 
 interface OpenAccountPageProps {
     onNavigateToLogin: () => void;
@@ -38,9 +39,14 @@ const OpenAccountPage: React.FC<OpenAccountPageProps> = ({ onNavigateToLogin, on
     const [selectedTier, setSelectedTier] = useState<string | null>(null);
     const [scanningState, setScanningState] = useState<'idle' | 'scanning' | 'success'>('idle');
     const [formData, setFormData] = useState({
-        firstName: '', lastName: '', email: '', phone: '', country: 'Sweden'
+        firstName: '', lastName: '', email: '', phone: '', country: 'Sweden', password: ''
     });
     const [processingStep, setProcessingStep] = useState(0);
+    const [error, setError] = useState('');
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
 
     // Simulated ID Scanning
     const startScan = () => {
@@ -50,14 +56,30 @@ const OpenAccountPage: React.FC<OpenAccountPageProps> = ({ onNavigateToLogin, on
         }, 3000);
     };
 
-    // Simulated Account Creation
+    // Simulated Account Creation & Registration
     useEffect(() => {
         if (step === 4) {
             const interval = setInterval(() => {
                 setProcessingStep(prev => {
                     if (prev >= 100) {
                         clearInterval(interval);
-                        setTimeout(() => setStep(5), 500);
+                        
+                        // Perform actual registration in DB
+                        bankingSystem.register({
+                            firstName: formData.firstName,
+                            lastName: formData.lastName,
+                            email: formData.email,
+                            phone: formData.phone,
+                            country: formData.country,
+                            password: formData.password || 'Password123!' // Fallback default for demo flow
+                        }).then(() => {
+                            setTimeout(() => setStep(5), 500);
+                        }).catch(err => {
+                            console.error("Registration failed", err);
+                            setError("Registration failed. Email might be in use.");
+                            setStep(3); // Go back
+                        });
+
                         return 100;
                     }
                     return prev + 2; // Progress increment
@@ -65,7 +87,7 @@ const OpenAccountPage: React.FC<OpenAccountPageProps> = ({ onNavigateToLogin, on
             }, 50);
             return () => clearInterval(interval);
         }
-    }, [step]);
+    }, [step, formData]);
 
     const getProcessingText = (progress: number) => {
         if (progress < 30) return "Verifying Identity & Biometrics...";
@@ -219,23 +241,33 @@ const OpenAccountPage: React.FC<OpenAccountPageProps> = ({ onNavigateToLogin, on
                         <div className="max-w-2xl mx-auto animate-fade-in-up">
                             <h2 className="text-3xl font-bold text-center mb-8">Personal Details</h2>
                             <div className="bg-white/5 border border-white/10 rounded-3xl p-8 backdrop-blur-md">
+                                {error && <div className="mb-4 p-3 bg-red-500/20 border border-red-500/50 text-red-300 rounded-lg text-sm">{error}</div>}
+                                
                                 <div className="grid grid-cols-2 gap-6 mb-6">
                                     <div>
                                         <label className="block text-xs font-bold uppercase text-gray-400 mb-2">First Name</label>
-                                        <input type="text" className="w-full bg-black/20 border border-white/10 rounded-xl p-3 text-white focus:border-[#e6b325] focus:ring-1 focus:ring-[#e6b325] outline-none" placeholder="e.g. Alex" />
+                                        <input type="text" name="firstName" value={formData.firstName} onChange={handleInputChange} className="w-full bg-black/20 border border-white/10 rounded-xl p-3 text-white focus:border-[#e6b325] focus:ring-1 focus:ring-[#e6b325] outline-none" placeholder="e.g. Alex" />
                                     </div>
                                     <div>
                                         <label className="block text-xs font-bold uppercase text-gray-400 mb-2">Last Name</label>
-                                        <input type="text" className="w-full bg-black/20 border border-white/10 rounded-xl p-3 text-white focus:border-[#e6b325] focus:ring-1 focus:ring-[#e6b325] outline-none" placeholder="e.g. Byrne" />
+                                        <input type="text" name="lastName" value={formData.lastName} onChange={handleInputChange} className="w-full bg-black/20 border border-white/10 rounded-xl p-3 text-white focus:border-[#e6b325] focus:ring-1 focus:ring-[#e6b325] outline-none" placeholder="e.g. Byrne" />
                                     </div>
                                 </div>
                                 <div className="mb-6">
                                     <label className="block text-xs font-bold uppercase text-gray-400 mb-2">Email Address</label>
-                                    <input type="email" className="w-full bg-black/20 border border-white/10 rounded-xl p-3 text-white focus:border-[#e6b325] focus:ring-1 focus:ring-[#e6b325] outline-none" placeholder="alex@example.com" />
+                                    <input type="email" name="email" value={formData.email} onChange={handleInputChange} className="w-full bg-black/20 border border-white/10 rounded-xl p-3 text-white focus:border-[#e6b325] focus:ring-1 focus:ring-[#e6b325] outline-none" placeholder="alex@example.com" />
+                                </div>
+                                <div className="mb-6">
+                                    <label className="block text-xs font-bold uppercase text-gray-400 mb-2">Phone Number</label>
+                                    <input type="tel" name="phone" value={formData.phone} onChange={handleInputChange} className="w-full bg-black/20 border border-white/10 rounded-xl p-3 text-white focus:border-[#e6b325] focus:ring-1 focus:ring-[#e6b325] outline-none" placeholder="+1..." />
+                                </div>
+                                <div className="mb-6">
+                                    <label className="block text-xs font-bold uppercase text-gray-400 mb-2">Create Password</label>
+                                    <input type="password" name="password" value={formData.password} onChange={handleInputChange} className="w-full bg-black/20 border border-white/10 rounded-xl p-3 text-white focus:border-[#e6b325] focus:ring-1 focus:ring-[#e6b325] outline-none" placeholder="Minimum 8 characters" />
                                 </div>
                                 <div className="mb-8">
                                     <label className="block text-xs font-bold uppercase text-gray-400 mb-2">Tax Residency</label>
-                                    <select className="w-full bg-black/20 border border-white/10 rounded-xl p-3 text-white focus:border-[#e6b325] focus:ring-1 focus:ring-[#e6b325] outline-none appearance-none">
+                                    <select name="country" value={formData.country} onChange={handleInputChange} className="w-full bg-black/20 border border-white/10 rounded-xl p-3 text-white focus:border-[#e6b325] focus:ring-1 focus:ring-[#e6b325] outline-none appearance-none">
                                         <option>Sweden</option>
                                         <option>United States</option>
                                         <option>Germany</option>
@@ -243,7 +275,7 @@ const OpenAccountPage: React.FC<OpenAccountPageProps> = ({ onNavigateToLogin, on
                                     </select>
                                 </div>
                                 
-                                <button onClick={() => setStep(4)} className="w-full py-4 bg-[#e6b325] text-[#1a365d] font-bold rounded-xl hover:bg-[#d4a017] transition-colors shadow-lg">
+                                <button onClick={() => setStep(4)} disabled={!formData.firstName || !formData.email || !formData.password} className="w-full py-4 bg-[#e6b325] text-[#1a365d] font-bold rounded-xl hover:bg-[#d4a017] transition-colors shadow-lg disabled:opacity-50 disabled:cursor-not-allowed">
                                     Create Account
                                 </button>
                             </div>

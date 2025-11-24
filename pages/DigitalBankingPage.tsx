@@ -44,7 +44,7 @@ const DigitalBankingPage: React.FC = () => {
             case 'cards': return <CardsView />;
             case 'payments': return <PaymentsView setActiveView={setActiveView} />;
             case 'budgeting': return <BudgetingView />;
-            case 'investments': return <InvestmentsView />;
+            case 'investments': return <InvestmentsView setActiveView={setActiveView} />;
             case 'loans': return <LoansView setActiveView={setActiveView} />;
             case 'loan-application': return <LoanApplicationView setActiveView={setActiveView} />;
             case 'settings': return <SettingsView />;

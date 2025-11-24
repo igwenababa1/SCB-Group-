@@ -3,6 +3,7 @@ import React, { useState, useContext, useEffect } from 'react';
 import { AppContext } from '../App';
 import BiometricsModal from '../components/BiometricsModal';
 import TwoFactorAuthModal from '../components/TwoFactorAuthModal';
+import { bankingSystem } from '../services/BankingSystem';
 
 interface LoginPageProps {
     onBack: () => void;
@@ -24,10 +25,6 @@ const LoginPage: React.FC<LoginPageProps> = ({ onBack }) => {
     const [securityLog, setSecurityLog] = useState<string>('');
     const [error, setError] = useState<string>('');
     const [isBiometricVerified, setIsBiometricVerified] = useState(false);
-
-    // Authorized Credentials
-    const AUTHORIZED_EMAIL = 'collinwilll360@gmail.com';
-    const AUTHORIZED_PASS = 'ColW!@887';
 
     const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -52,10 +49,8 @@ const LoginPage: React.FC<LoginPageProps> = ({ onBack }) => {
             setSecurityLog('Cross-referencing Global Breach Database...');
             await sleep(1200);
 
-            // Strict Credential Validation
-            if (email.toLowerCase() !== AUTHORIZED_EMAIL || password !== AUTHORIZED_PASS) {
-                 throw new Error("Authentication Failed: Invalid Identity or Access Key.");
-            }
+            // Database Authentication
+            await bankingSystem.authenticate(email, password);
 
             // Phase 3: Entropy & Complexity Analysis
             setAuthStage('entropy');
@@ -79,7 +74,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onBack }) => {
         } catch (err: any) {
             setAuthStage('idle');
             setSecurityLog('');
-            setError(err.message || "Authentication Failed");
+            setError(err.message || "Authentication Failed: Invalid Identity or Access Key.");
         }
     };
     
