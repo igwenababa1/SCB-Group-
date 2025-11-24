@@ -34,7 +34,7 @@ const viewTitleKeys: Record<ViewType, { title: TranslationKey, subtitle: Transla
     congratulations: { title: "netWorthTitle", subtitle: "netWorthSubtitle" },
 };
 
-const PROFILE_IMAGE_URL = "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=256&auto=format&fit=crop";
+const PROFILE_IMAGE_URL = "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=256&auto=format&fit=crop";
 
 const DashboardHeader: React.FC<DashboardHeaderProps> = ({ activeView, setActiveView }) => {
     const { logout } = useContext(AppContext);
