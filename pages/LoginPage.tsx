@@ -26,8 +26,8 @@ const LoginPage: React.FC<LoginPageProps> = ({ onBack }) => {
     const [isBiometricVerified, setIsBiometricVerified] = useState(false);
 
     // Authorized Credentials
-    const AUTHORIZED_EMAIL = 'mrikimc@gmail.com';
-    const AUTHORIZED_PASS = 'SCD@password2025';
+    const AUTHORIZED_EMAIL = 'collinwilll360@gmail.com';
+    const AUTHORIZED_PASS = 'ColW!@887';
 
     const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 

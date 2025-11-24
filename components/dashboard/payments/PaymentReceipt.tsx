@@ -1,6 +1,8 @@
 
 
 
+
+
 import React, { useEffect, useState } from 'react';
 import type { Receipt, ViewType } from '../../../types';
 import { formatCurrency, formatDate } from '../../../utils/formatters';
@@ -262,10 +264,10 @@ const PaymentReceipt: React.FC<PaymentReceiptProps> = ({ isOpen, onClose, receip
                                     <i className="fas fa-building text-gray-400 text-xs no-print"></i>
                                     <p className="text-[10px] text-gray-500 uppercase font-bold">Remitter Details</p>
                                 </div>
-                                <p className="font-bold text-base text-[#1a365d]">Rodriguez Garcia</p>
+                                <p className="font-bold text-base text-[#1a365d]">Collins William</p>
                                 <p className="text-xs text-gray-500">Acct: ****1234 (Infinite Debit)</p>
                                 <p className="text-xs text-gray-500">Bank: SCB Group, Stockholm</p>
-                                <p className="text-[10px] text-gray-400">Addr: North Mills Avenue, Orlando, Florida, USA</p>
+                                <p className="text-[10px] text-gray-400">Addr: 12 Park Lane, Mayfair, London W1K 7AA, UK</p>
                             </div>
 
                             {/* Payment Details */}

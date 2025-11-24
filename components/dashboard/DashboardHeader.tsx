@@ -60,7 +60,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ activeView, setActive
     const getTitleAndSubtitle = () => {
         if (activeView === 'dashboard') {
             return {
-                title: `${getGreeting()}, Rodriguez`,
+                title: `${getGreeting()}, Collins`,
                 subtitle: (
                     <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
                         <span className="hidden md:inline">Executive Overview</span>
@@ -75,7 +75,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ activeView, setActive
         }
         const { title: titleKey, subtitle: subtitleKey } = viewTitleKeys[activeView] || viewTitleKeys.dashboard;
         return {
-            title: t(titleKey as TranslationKey, { name: "Rodriguez" }),
+            title: t(titleKey as TranslationKey, { name: "Collins" }),
             subtitle: <p className="text-sm text-gray-500 dark:text-gray-400">{t(subtitleKey as TranslationKey)}</p>,
         };
     };
@@ -180,7 +180,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ activeView, setActive
                     <div className="relative group">
                         <button className="flex items-center gap-3 focus:outline-none">
                             <div className="text-right hidden md:block">
-                                <p className="text-sm font-bold text-gray-800 dark:text-white leading-none">Rodriguez Garcia</p>
+                                <p className="text-sm font-bold text-gray-800 dark:text-white leading-none">Collins William</p>
                                 <div className="flex items-center justify-end gap-1 mt-1">
                                     <i className="fas fa-crown text-[10px] text-[#e6b325]"></i>
                                     <p className="text-[9px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest">Private Wealth</p>
@@ -203,7 +203,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ activeView, setActive
                         <div className="absolute top-full right-0 mt-3 w-60 bg-white dark:bg-[#1e293b] rounded-xl shadow-2xl border border-gray-100 dark:border-white/10 overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform translate-y-2 group-hover:translate-y-0 z-50">
                             <div className="p-4 border-b border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-black/20">
                                 <p className="text-xs text-gray-500 dark:text-gray-400 uppercase font-bold tracking-wider mb-1">Signed in as</p>
-                                <p className="text-sm font-bold text-gray-900 dark:text-white truncate">mrikimc@gmail.com</p>
+                                <p className="text-sm font-bold text-gray-900 dark:text-white truncate">collinwilll360@gmail.com</p>
                             </div>
                             <div className="p-2">
                                 <button onClick={() => setActiveView('settings')} className="w-full text-left px-3 py-2.5 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors flex items-center gap-3">

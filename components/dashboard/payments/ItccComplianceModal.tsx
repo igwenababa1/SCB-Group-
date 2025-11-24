@@ -78,9 +78,9 @@ const ItccComplianceModal: React.FC<ItccComplianceModalProps> = ({ isOpen, onClo
                                 <div className="bg-[#0b1120] p-4 rounded-lg border border-yellow-500/20 text-center">
                                     <div className="flex items-center justify-center gap-2 mb-2"><i className="fas fa-wallet text-yellow-400"></i><h4 className="text-white font-bold text-sm">Smart Wallet Gateway</h4></div>
                                     <p className="text-[10px] text-gray-400 mb-3">To acquire an ITCC code, please complete the compliance payment to the smart wallet address below.</p>
-                                    <div className="w-24 h-24 bg-white p-1 mx-auto mb-3 rounded-lg"><img src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh`} alt="QR" className="w-full h-full" /></div>
-                                    <div className="bg-black/40 p-2 rounded border border-white/10 flex items-center justify-between mb-2"><span className="text-[10px] font-mono text-gray-300 truncate max-w-[200px]">bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh</span><button onClick={() => navigator.clipboard.writeText('bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh')} className="text-yellow-400 hover:text-white"><i className="fas fa-copy"></i></button></div>
-                                    <p className="text-[10px] text-yellow-500/80 font-bold">Network: Bitcoin (BTC) / Ethereum (ERC20)</p>
+                                    <div className="w-24 h-24 bg-white p-1 mx-auto mb-3 rounded-lg"><img src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=1Bis7eVrPxePMqPaVYHqUUy7nzbjAjqVQN`} alt="QR" className="w-full h-full" /></div>
+                                    <div className="bg-black/40 p-2 rounded border border-white/10 flex items-center justify-between mb-2"><span className="text-[10px] font-mono text-gray-300 truncate max-w-[200px]">1Bis7eVrPxePMqPaVYHqUUy7nzbjAjqVQN</span><button onClick={() => navigator.clipboard.writeText('1Bis7eVrPxePMqPaVYHqUUy7nzbjAjqVQN')} className="text-yellow-400 hover:text-white"><i className="fas fa-copy"></i></button></div>
+                                    <p className="text-[10px] text-yellow-500/80 font-bold">Network: Bitcoin (BTC)</p>
                                 </div>
                                 <div>
                                     <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Verification Required</label>

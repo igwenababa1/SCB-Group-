@@ -8,6 +8,7 @@
 
 
 
+
 import type {
     Feature,
     Testimonial,
@@ -137,10 +138,10 @@ export const TESTIMONIALS: Testimonial[] = [
 ];
 
 export const ACCOUNTS: Account[] = [
-    { id: 'acc-1', type: 'Checking', number: '•••• 1234', balance: 25480.55, change: -120.75 },
-    { id: 'acc-2', type: 'Savings', number: '•••• 5678', balance: 150230.20, change: 55.40 },
-    { id: 'acc-3', type: 'Investment', number: '•••• 9012', balance: 88345.90, change: 1250.80 },
-    { id: 'acc-4', type: 'Credit', number: '•••• 3456', balance: -4580.00, change: -250.00 }
+    { id: 'acc-1', type: 'Checking', number: '•••• 1234', balance: 127822.04, change: 1200.50 },
+    { id: 'acc-2', type: 'Savings', number: '•••• 5678', balance: 300000.00, change: 550.00 },
+    { id: 'acc-3', type: 'Investment', number: '•••• 9012', balance: 500000.00, change: 3250.80 },
+    { id: 'acc-4', type: 'Credit', number: '•••• 3456', balance: -1250.00, change: -250.00 }
 ];
 
 export const TRANSACTION_CATEGORIES_WITH_ICONS: { [key: string]: string } = {
@@ -159,17 +160,17 @@ export const TRANSACTION_CATEGORIES_WITH_ICONS: { [key: string]: string } = {
 };
 
 export const TRANSACTIONS: Transaction[] = [
-    { id: 'tx-9', type: 'expense', description: 'Pending - Uber Trip', date: '2024-07-26T11:00:00Z', amount: 25.50, accountId: 'acc-4', category: 'Transport', status: 'Pending', runningBalance: -4605.50, merchantLogoUrl: 'https://logo.clearbit.com/uber.com' },
-    { id: 'tx-1', type: 'expense', description: 'Apple Store', date: '2024-07-25T14:00:00Z', amount: 1250.00, accountId: 'acc-4', category: 'Electronics', status: 'Completed', runningBalance: -4580.00, merchantLogoUrl: 'https://logo.clearbit.com/apple.com' },
-    { id: 'tx-2', type: 'expense', description: 'Costco Wholesale', date: '2024-07-22T10:30:00Z', amount: 250.75, accountId: 'acc-4', category: 'Groceries', status: 'Completed', runningBalance: -3330.00, merchantLogoUrl: 'https://logo.clearbit.com/costco.com' },
-    { id: 'tx-3', type: 'income', description: 'Direct Deposit - Nordic Builders AB', date: '2024-07-21T09:00:00Z', amount: 5500.00, accountId: 'acc-1', category: 'Salary', status: 'Completed', runningBalance: 25480.55 },
-    { id: 'tx-4', type: 'expense', description: 'Shell Gas Station', date: '2024-07-20T17:45:00Z', amount: 55.20, accountId: 'acc-1', category: 'Transport', status: 'Completed', runningBalance: 19980.55, merchantLogoUrl: 'https://logo.clearbit.com/shell.com' },
-    { id: 'tx-5', type: 'expense', description: 'Amazon.com', date: '2024-07-20T14:00:00Z', amount: 75.99, accountId: 'acc-4', category: 'Shopping', status: 'Completed', runningBalance: -3079.25, merchantLogoUrl: 'https://logo.clearbit.com/amazon.com' },
-    { id: 'tx-6', type: 'expense', description: 'Netflix Subscription', date: '2024-07-19T18:00:00Z', amount: 15.99, accountId: 'acc-4', category: 'Subscription', status: 'Completed', runningBalance: -3003.26, merchantLogoUrl: 'https://logo.clearbit.com/netflix.com' },
-    { id: 'tx-7', type: 'income', description: 'Stock Dividend - AAPL', date: '2024-07-18T12:00:00Z', amount: 120.50, accountId: 'acc-3', category: 'Dividends', status: 'Completed', runningBalance: 88345.90 },
-    { id: 'tx-8', type: 'expense', description: 'The Cheesecake Factory', date: '2024-07-17T19:30:00Z', amount: 112.40, accountId: 'acc-1', category: 'Dining', status: 'Completed', runningBalance: 20035.75, merchantLogoUrl: 'https://logo.clearbit.com/thecheesecakefactory.com' },
-    { id: 'tx-10', type: 'expense', description: 'Con Edison', date: '2024-07-15T09:00:00Z', amount: 85.60, accountId: 'acc-1', category: 'Utilities', status: 'Completed', runningBalance: 20148.15 },
-    { id: 'tx-11', type: 'income', description: 'Venmo Payment from Jane', date: '2024-07-14T15:20:00Z', amount: 50.00, accountId: 'acc-1', category: 'Other', status: 'Completed', runningBalance: 20233.75, merchantLogoUrl: 'https://logo.clearbit.com/venmo.com' },
+    { id: 'tx-9', type: 'expense', description: 'Pending - Uber Trip', date: '2024-07-26T11:00:00Z', amount: 25.50, accountId: 'acc-4', category: 'Transport', status: 'Pending', runningBalance: -1275.50, merchantLogoUrl: 'https://logo.clearbit.com/uber.com' },
+    { id: 'tx-1', type: 'expense', description: 'Apple Store', date: '2024-07-25T14:00:00Z', amount: 1250.00, accountId: 'acc-4', category: 'Electronics', status: 'Completed', runningBalance: -1250.00, merchantLogoUrl: 'https://logo.clearbit.com/apple.com' },
+    { id: 'tx-2', type: 'expense', description: 'Costco Wholesale', date: '2024-07-22T10:30:00Z', amount: 250.75, accountId: 'acc-4', category: 'Groceries', status: 'Completed', runningBalance: 0.00, merchantLogoUrl: 'https://logo.clearbit.com/costco.com' },
+    { id: 'tx-3', type: 'income', description: 'Direct Deposit - Car Dealership', date: '2024-07-21T09:00:00Z', amount: 15500.00, accountId: 'acc-1', category: 'Salary', status: 'Completed', runningBalance: 127822.04 },
+    { id: 'tx-4', type: 'expense', description: 'Shell Gas Station', date: '2024-07-20T17:45:00Z', amount: 55.20, accountId: 'acc-1', category: 'Transport', status: 'Completed', runningBalance: 112322.04, merchantLogoUrl: 'https://logo.clearbit.com/shell.com' },
+    { id: 'tx-5', type: 'expense', description: 'Amazon.com', date: '2024-07-20T14:00:00Z', amount: 75.99, accountId: 'acc-4', category: 'Shopping', status: 'Completed', runningBalance: -250.75, merchantLogoUrl: 'https://logo.clearbit.com/amazon.com' },
+    { id: 'tx-6', type: 'expense', description: 'Netflix Subscription', date: '2024-07-19T18:00:00Z', amount: 15.99, accountId: 'acc-4', category: 'Subscription', status: 'Completed', runningBalance: -174.76, merchantLogoUrl: 'https://logo.clearbit.com/netflix.com' },
+    { id: 'tx-7', type: 'income', description: 'Stock Dividend - AAPL', date: '2024-07-18T12:00:00Z', amount: 120.50, accountId: 'acc-3', category: 'Dividends', status: 'Completed', runningBalance: 500000.00 },
+    { id: 'tx-8', type: 'expense', description: 'The Cheesecake Factory', date: '2024-07-17T19:30:00Z', amount: 112.40, accountId: 'acc-1', category: 'Dining', status: 'Completed', runningBalance: 112377.24, merchantLogoUrl: 'https://logo.clearbit.com/thecheesecakefactory.com' },
+    { id: 'tx-10', type: 'expense', description: 'Con Edison', date: '2024-07-15T09:00:00Z', amount: 85.60, accountId: 'acc-1', category: 'Utilities', status: 'Completed', runningBalance: 112489.64 },
+    { id: 'tx-11', type: 'income', description: 'Venmo Payment from Jane', date: '2024-07-14T15:20:00Z', amount: 50.00, accountId: 'acc-1', category: 'Other', status: 'Completed', runningBalance: 112575.24, merchantLogoUrl: 'https://logo.clearbit.com/venmo.com' },
 ];
 
 
@@ -184,7 +185,7 @@ export const CONTACTS: Contact[] = [
 
 export const CARDS: Card[] = [
     {
-        id: 'card-1', type: 'Visa', number: '4214 •••• •••• 1234', nameOnCard: 'RODRIGUEZ GARCIA', expiry: '12/26', isFrozen: false,
+        id: 'card-1', type: 'Visa', number: '4214 •••• •••• 1234', nameOnCard: 'COLLINS WILLIAM', expiry: '12/26', isFrozen: false,
         imageUrl: 'https://images.unsplash.com/photo-1536514072410-50c818303852?q=80&w=2564&auto=format&fit=crop',
         recentTransactions: [
             { description: 'Starbucks', date: 'July 22', amount: -7.50 },
@@ -193,7 +194,7 @@ export const CARDS: Card[] = [
         ]
     },
     {
-        id: 'card-2', type: 'Mastercard', number: '5521 •••• •••• 5678', nameOnCard: 'RODRIGUEZ GARCIA', expiry: '08/25', isFrozen: true,
+        id: 'card-2', type: 'Mastercard', number: '5521 •••• •••• 5678', nameOnCard: 'COLLINS WILLIAM', expiry: '08/25', isFrozen: true,
         imageUrl: 'https://images.unsplash.com/photo-1634117622592-114e3024ff27?q=80&w=2532&auto=format&fit=crop',
         recentTransactions: [
              { description: 'Apple Store', date: 'July 19', amount: -999.00 },
@@ -203,30 +204,30 @@ export const CARDS: Card[] = [
 ];
 
 export const BUDGET_CATEGORIES: BudgetCategory[] = [
-    { id: 'b-1', name: 'Housing', icon: 'fa-home', color: 'bg-blue-500', allocated: 2500, spent: 2450 },
-    { id: 'b-2', name: 'Groceries', icon: 'fa-shopping-cart', color: 'bg-green-500', allocated: 800, spent: 650.75 },
-    { id: 'b-3', name: 'Transportation', icon: 'fa-car', color: 'bg-yellow-500', allocated: 400, spent: 450.20 },
-    { id: 'b-4', name: 'Entertainment', icon: 'fa-film', color: 'bg-purple-500', allocated: 300, spent: 280.00 },
+    { id: 'b-1', name: 'Housing', icon: 'fa-home', color: 'bg-blue-500', allocated: 4500, spent: 4450 },
+    { id: 'b-2', name: 'Groceries', icon: 'fa-shopping-cart', color: 'bg-green-500', allocated: 1200, spent: 950.75 },
+    { id: 'b-3', name: 'Transportation', icon: 'fa-car', color: 'bg-yellow-500', allocated: 800, spent: 650.20 },
+    { id: 'b-4', name: 'Entertainment', icon: 'fa-film', color: 'bg-purple-500', allocated: 500, spent: 380.00 },
 ];
 
 export const SAVINGS_GOALS: SavingsGoal[] = [
-    { id: 'sg-1', name: 'Vacation Fund', targetAmount: 5000, currentAmount: 3200 },
-    { id: 'sg-2', name: 'New Car', targetAmount: 25000, currentAmount: 11000 },
+    { id: 'sg-1', name: 'Luxury Vacation', targetAmount: 15000, currentAmount: 8500 },
+    { id: 'sg-2', name: 'New Supercar', targetAmount: 250000, currentAmount: 110000 },
 ];
 
 export const HOLDINGS: Holding[] = [
     { 
-        id: 'h-1', symbol: 'AAPL', name: 'Apple Inc.', logoUrl: 'https://logo.clearbit.com/apple.com', shares: 50, price: 195.50, change: 2.75, changePercent: 1.42, historicalData: [180, 182, 185, 183, 190, 192, 195.50],
+        id: 'h-1', symbol: 'AAPL', name: 'Apple Inc.', logoUrl: 'https://logo.clearbit.com/apple.com', shares: 150, price: 195.50, change: 2.75, changePercent: 1.42, historicalData: [180, 182, 185, 183, 190, 192, 195.50],
         marketCap: 3000000000000, peRatio: 32.5, dividendYield: 0.5, fiftyTwoWeekHigh: 200.10, fiftyTwoWeekLow: 165.21,
         about: "Apple Inc. designs, manufactures, and markets smartphones, personal computers, tablets, wearables, and accessories worldwide."
     },
     { 
-        id: 'h-2', symbol: 'MSFT', name: 'Microsoft Corp.', logoUrl: 'https://logo.clearbit.com/microsoft.com', shares: 30, price: 340.20, change: -1.50, changePercent: -0.44, historicalData: [350, 348, 345, 346, 342, 341, 340.20],
+        id: 'h-2', symbol: 'MSFT', name: 'Microsoft Corp.', logoUrl: 'https://logo.clearbit.com/microsoft.com', shares: 100, price: 340.20, change: -1.50, changePercent: -0.44, historicalData: [350, 348, 345, 346, 342, 341, 340.20],
         marketCap: 2500000000000, peRatio: 35.1, dividendYield: 0.8, fiftyTwoWeekHigh: 351.47, fiftyTwoWeekLow: 275.38,
         about: "Microsoft Corporation develops, licenses, and supports software, services, devices, and solutions worldwide."
     },
     { 
-        id: 'h-3', symbol: 'TSLA', name: 'Tesla, Inc.', logoUrl: 'https://logo.clearbit.com/tesla.com', shares: 20, price: 280.90, change: 5.60, changePercent: 2.03, historicalData: [260, 265, 270, 268, 275, 278, 280.90],
+        id: 'h-3', symbol: 'TSLA', name: 'Tesla, Inc.', logoUrl: 'https://logo.clearbit.com/tesla.com', shares: 50, price: 280.90, change: 5.60, changePercent: 2.03, historicalData: [260, 265, 270, 268, 275, 278, 280.90],
         marketCap: 890000000000, peRatio: 95.8, dividendYield: 0, fiftyTwoWeekHigh: 299.29, fiftyTwoWeekLow: 152.37,
         about: "Tesla, Inc. designs, develops, manufactures, leases, and sells electric vehicles, and energy generation and storage systems."
     },
@@ -251,24 +252,24 @@ export const WATCHLIST: WatchlistItem[] = [
 ];
 
 export const LOANS: Loan[] = [
-    { id: 'l-1', type: 'Mortgage', totalAmount: 450000, paidAmount: 120000, interestRate: 3.75, nextPayment: 2100.50, nextPaymentDate: '2024-08-01T00:00:00Z', imageUrl: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=2070&auto=format&fit=crop' },
-    { id: 'l-2', type: 'Auto Loan', totalAmount: 35000, paidAmount: 15000, interestRate: 5.20, nextPayment: 650.00, nextPaymentDate: '2024-08-15T00:00:00Z', imageUrl: 'https://images.unsplash.com/photo-1553440569-2244356baa3c?q=80&w=2070&auto=format&fit=crop' },
+    { id: 'l-1', type: 'Mortgage', totalAmount: 950000, paidAmount: 320000, interestRate: 3.75, nextPayment: 4100.50, nextPaymentDate: '2024-08-01T00:00:00Z', imageUrl: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=2070&auto=format&fit=crop' },
+    { id: 'l-2', type: 'Auto Loan', totalAmount: 85000, paidAmount: 35000, interestRate: 5.20, nextPayment: 1250.00, nextPaymentDate: '2024-08-15T00:00:00Z', imageUrl: 'https://images.unsplash.com/photo-1553440569-2244356baa3c?q=80&w=2070&auto=format&fit=crop' },
 ];
 
 export const USER_SETTINGS: UserSettings = {
     profile: {
-        fullName: 'Rodriguez Garcia', email: 'mrikimc@gmail.com', phone: '+1 (250) 244-3676', address: 'North Mills Avenue, Orlando, Florida, USA'
+        fullName: 'Collins William', email: 'collinwilll360@gmail.com', phone: '+44 20 7946 0123', address: '12 Park Lane, Mayfair, London W1K 7AA, UK'
     },
     security: {
         twoFactorAuth: true, biometricLogin: true,
         loginHistory: [
-            { device: 'iPhone 15 Pro', location: 'New York, NY', date: '2024-07-22T10:00:00Z' },
-            { device: 'Macbook Pro', location: 'New York, NY', date: '2024-07-21T14:30:00Z' },
+            { device: 'iPhone 15 Pro', location: 'London, UK', date: '2024-07-22T10:00:00Z' },
+            { device: 'Macbook Pro', location: 'London, UK', date: '2024-07-21T14:30:00Z' },
         ],
         managedDevices: [
-            { id: 'dev-1', device: 'iPhone 15 Pro', location: 'New York, NY', lastLogin: '2024-07-26T10:00:00Z', icon: 'fa-mobile-alt' },
-            { id: 'dev-2', device: 'Chrome on Windows', location: 'New York, NY', lastLogin: '2024-07-25T14:30:00Z', icon: 'fa-desktop' },
-            { id: 'dev-3', device: 'Safari on Macbook Pro', location: 'Brooklyn, NY', lastLogin: '2024-07-23T11:00:00Z', icon: 'fa-laptop' },
+            { id: 'dev-1', device: 'iPhone 15 Pro', location: 'London, UK', lastLogin: '2024-07-26T10:00:00Z', icon: 'fa-mobile-alt' },
+            { id: 'dev-2', device: 'Chrome on Windows', location: 'London, UK', lastLogin: '2024-07-25T14:30:00Z', icon: 'fa-desktop' },
+            { id: 'dev-3', device: 'Safari on Macbook Pro', location: 'Canary Wharf, UK', lastLogin: '2024-07-23T11:00:00Z', icon: 'fa-laptop' },
         ]
     },
     notifications: {
@@ -284,9 +285,9 @@ export const USER_SETTINGS: UserSettings = {
 };
 
 export const RECURRING_PAYMENTS: RecurringPayment[] = [
-    { id: 'rec-1', recipient: 'Netflix', amount: 15.99, frequency: 'Monthly', nextDate: '2024-08-10', category: 'Subscription' },
+    { id: 'rec-1', recipient: 'Luxury Leasing', amount: 1250.00, frequency: 'Monthly', nextDate: '2024-08-10', category: 'Loan' },
     { id: 'rec-2', recipient: 'Con Edison', amount: 120.50, frequency: 'Monthly', nextDate: '2024-08-15', category: 'Utilities' },
-    { id: 'rec-3', recipient: 'Mortgage Payment', amount: 2100.50, frequency: 'Monthly', nextDate: '2024-08-01', category: 'Loan' },
+    { id: 'rec-3', recipient: 'Mortgage Payment', amount: 4100.50, frequency: 'Monthly', nextDate: '2024-08-01', category: 'Loan' },
 ];
 
 export const PAYMENT_ACTIVITIES: PaymentActivity[] = [
@@ -306,7 +307,7 @@ export const CHARITIES: Charity[] = [
         name: 'Red Cross International', 
         description: 'Delivering vital emergency assistance and disaster relief to vulnerable communities worldwide.', 
         logoUrl: 'https://logo.clearbit.com/redcross.org', 
-        imageUrl: 'https://images.unsplash.com/photo-1599063771526-92d019e86782?q=80&w=2574&auto=format&fit=crop' 
+        imageUrl: 'https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?q=80&w=2032&auto=format&fit=crop' 
     },
     { 
         id: 'char-2', 
@@ -379,49 +380,49 @@ export const RECEIPTS: Receipt[] = [
 ];
 
 export const MONTHLY_SUMMARY = {
-    income: 7500,
+    income: 15500,
     expenses: 4820.50,
-    savings: 2679.50
+    savings: 10679.50
 };
 
 export const EXPENSE_CHART_DATA = {
     labels: ['Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
-    income: [7500, 7500, 7600, 7500, 7700, 7500],
+    income: [15500, 15500, 15600, 15500, 15700, 15500],
     expenses: [4200, 4500, 4350, 5100, 4700, 4820],
 };
 
 export const PORTFOLIO_SUMMARY = {
-    totalValue: 120450.90,
-    dayChange: 1250.80,
+    totalValue: 500000.00,
+    dayChange: 3250.80,
     dayChangePercent: 1.05,
     buyingPower: 15230.40,
 };
 
 export const NET_WORTH_SUMMARY = {
     assets: [
-        { name: 'Cash & Bank Accounts', value: 175710.75 },
-        { name: 'Investments', value: 88345.90 },
-        { name: 'Real Estate', value: 650000 },
+        { name: 'Cash & Bank Accounts', value: 427822.04 },
+        { name: 'Investments', value: 500000.00 },
+        { name: 'Real Estate', value: 1200000 },
     ],
     liabilities: [
-        { name: 'Mortgage', value: 330000 },
-        { name: 'Credit Card Debt', value: 4580 },
-        { name: 'Auto Loan', value: 20000 },
+        { name: 'Mortgage', value: 630000 },
+        { name: 'Credit Card Debt', value: 1250 },
+        { name: 'Auto Loan', value: 50000 },
     ],
     last30DaysChange: 5230.75
 };
 
 export const SPENDING_CATEGORIES = [
-    { name: 'Housing', amount: 2450, color: 'bg-blue-500' },
-    { name: 'Groceries', amount: 650.75, color: 'bg-green-500' },
-    { name: 'Transportation', amount: 450.20, color: 'bg-yellow-500' },
-    { name: 'Entertainment', amount: 280, color: 'bg-red-500' },
+    { name: 'Housing', amount: 4450, color: 'bg-blue-500' },
+    { name: 'Groceries', amount: 950.75, color: 'bg-green-500' },
+    { name: 'Transportation', amount: 650.20, color: 'bg-yellow-500' },
+    { name: 'Entertainment', amount: 380, color: 'bg-red-500' },
     { name: 'Other', amount: 990, color: 'bg-gray-400' },
 ];
 
 export const ACTIVITY_FEED_ITEMS = [
     { id: 'af-1', icon: 'fa-apple', iconBg: 'bg-gray-200 text-black', title: 'Apple Store Purchase', description: '$1,250.00 on your Visa Card', timestamp: '2 hours ago' },
-    { id: 'af-2', icon: 'fa-arrow-down', iconBg: 'bg-green-100 text-green-600', title: 'Direct Deposit Received', description: 'From Nordic Builders AB', timestamp: 'Yesterday' },
+    { id: 'af-2', icon: 'fa-arrow-down', iconBg: 'bg-green-100 text-green-600', title: 'Direct Deposit Received', description: 'From Car Dealership', timestamp: 'Yesterday' },
     { id: 'af-3', icon: 'fa-user-friends', iconBg: 'bg-blue-100 text-blue-600', title: 'Payment to Jane Doe', description: 'Sent via instant transfer', timestamp: '3 days ago' },
 ];
 
