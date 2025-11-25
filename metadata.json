@@ -1,6 +1,8 @@
 {
   "requestFramePermissions": [
-    "microphone"
+    "microphone",
+    "camera",
+    "geolocation"
   ],
   "name": "Copy of Swedish Construction Bank",
   "description": ""
