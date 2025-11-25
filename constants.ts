@@ -127,10 +127,10 @@ export const TESTIMONIALS: Testimonial[] = [
 ];
 
 export const ACCOUNTS: Account[] = [
-    { id: 'acc-1', type: 'Checking', number: '•••• 1234', balance: 127822.04, change: 1200.50 },
+    { id: 'acc-1', type: 'Checking', number: '•••• 1822', balance: 127822.04, change: 1200.50 },
     { id: 'acc-2', type: 'Savings', number: '•••• 5678', balance: 300000.00, change: 550.00 },
     { id: 'acc-3', type: 'Investment', number: '•••• 9012', balance: 500000.00, change: 3250.80 },
-    { id: 'acc-4', type: 'Credit', number: '•••• 3456', balance: -1250.00, change: -250.00 }
+    { id: 'acc-4', type: 'Credit', number: '•••• 5018', balance: -1250.00, change: -250.00 }
 ];
 
 export const TRANSACTION_CATEGORIES_WITH_ICONS: { [key: string]: string } = {
@@ -174,7 +174,7 @@ export const CONTACTS: Contact[] = [
 
 export const CARDS: Card[] = [
     {
-        id: 'card-1', type: 'Visa', number: '4214 •••• •••• 1234', nameOnCard: 'COLLINS WILLIAM', expiry: '12/26', isFrozen: false,
+        id: 'card-1', type: 'Visa', number: '4214 •••• •••• 1822', nameOnCard: 'COLLINS WILLIAM', expiry: '12/26', isFrozen: false,
         imageUrl: 'https://images.unsplash.com/photo-1536514072410-50c818303852?q=80&w=2564&auto=format&fit=crop',
         recentTransactions: [
             { description: 'Starbucks', date: 'July 22', amount: -7.50 },
@@ -183,7 +183,7 @@ export const CARDS: Card[] = [
         ]
     },
     {
-        id: 'card-2', type: 'Mastercard', number: '5521 •••• •••• 5678', nameOnCard: 'COLLINS WILLIAM', expiry: '08/25', isFrozen: true,
+        id: 'card-2', type: 'Mastercard', number: '5521 •••• •••• 5018', nameOnCard: 'COLLINS WILLIAM', expiry: '08/25', isFrozen: true,
         imageUrl: 'https://images.unsplash.com/photo-1634117622592-114e3024ff27?q=80&w=2532&auto=format&fit=crop',
         recentTransactions: [
              { description: 'Apple Store', date: 'July 19', amount: -999.00 },
@@ -328,7 +328,6 @@ export const GLOBAL_PARTNER_BANKS: GlobalPartnerBank[] = [
 
 export const INTERNATIONAL_ACCOUNTS: InternationalAccount[] = [
     { id: 'ia-1', bankName: 'Barclays', country: 'UK', accountNumber: 'GB29 NWBK 6016 1331 9268 19', balance: 15250.80, currency: 'GBP' },
-    // FIX: Changed 'name' property to 'bankName' to match the InternationalAccount type.
     { id: 'ia-2', bankName: 'Deutsche Bank', country: 'DE', accountNumber: 'DE89 3704 0044 0532 0130 00', balance: 22500.50, currency: 'EUR' },
 ];
 
