@@ -341,20 +341,50 @@ const GlobalNetworkView: React.FC<GlobalNetworkViewProps> = ({ setActiveView }) 
                                      <h4 className="font-bold text-white">Correspondent Banks</h4>
                                      <button className="text-xs text-blue-400 hover:text-white">Manage</button>
                                  </div>
-                                 <div className="space-y-3">
-                                     <div className="flex items-center justify-between p-2 hover:bg-white/5 rounded cursor-pointer">
-                                         <div className="flex items-center gap-3">
-                                             <img src="https://logo.clearbit.com/barclays.co.uk" className="w-6 h-6 rounded-full bg-white" />
-                                             <span className="text-sm text-gray-300">Barclays UK</span>
+                                 
+                                 {/* Headers */}
+                                 <div className="flex justify-between px-2 mb-2 text-[10px] font-bold text-gray-500 uppercase tracking-wider">
+                                     <div className="flex-1">Bank Entity</div>
+                                     <div className="flex-1 text-center">Account Number</div>
+                                     <div className="w-20 text-right">Status</div>
+                                 </div>
+
+                                 <div className="space-y-1">
+                                     <div className="flex items-center justify-between p-2 hover:bg-white/5 rounded-lg transition-colors cursor-pointer group">
+                                         <div className="flex-1 flex items-center gap-3">
+                                             <img src="https://logo.clearbit.com/barclays.co.uk" className="w-6 h-6 rounded-full bg-white p-0.5" alt="Barclays" />
+                                             <span className="text-sm text-gray-300 group-hover:text-white font-medium">Barclays UK</span>
                                          </div>
-                                         <span className="text-xs text-green-400">Connected</span>
+                                         <div className="flex-1 text-center text-[10px] font-mono text-gray-400 group-hover:text-blue-300">
+                                             GB29 3000 6016 1331
+                                         </div>
+                                         <div className="w-20 text-right">
+                                             <span className="text-[10px] font-bold text-green-400 bg-green-500/10 border border-green-500/20 px-2 py-0.5 rounded">Active</span>
+                                         </div>
                                      </div>
-                                     <div className="flex items-center justify-between p-2 hover:bg-white/5 rounded cursor-pointer">
-                                         <div className="flex items-center gap-3">
-                                             <img src="https://logo.clearbit.com/db.com" className="w-6 h-6 rounded-full bg-white" />
-                                             <span className="text-sm text-gray-300">Deutsche Bank</span>
+                                     <div className="flex items-center justify-between p-2 hover:bg-white/5 rounded-lg transition-colors cursor-pointer group">
+                                         <div className="flex-1 flex items-center gap-3">
+                                             <img src="https://logo.clearbit.com/db.com" className="w-6 h-6 rounded-full bg-white p-0.5" alt="Deutsche Bank" />
+                                             <span className="text-sm text-gray-300 group-hover:text-white font-medium">Deutsche Bank</span>
                                          </div>
-                                         <span className="text-xs text-green-400">Connected</span>
+                                         <div className="flex-1 text-center text-[10px] font-mono text-gray-400 group-hover:text-blue-300">
+                                             DE89 3704 0044 0532
+                                         </div>
+                                         <div className="w-20 text-right">
+                                             <span className="text-[10px] font-bold text-green-400 bg-green-500/10 border border-green-500/20 px-2 py-0.5 rounded">Active</span>
+                                         </div>
+                                     </div>
+                                     <div className="flex items-center justify-between p-2 hover:bg-white/5 rounded-lg transition-colors cursor-pointer group">
+                                         <div className="flex-1 flex items-center gap-3">
+                                             <img src="https://logo.clearbit.com/bnpparibas.com" className="w-6 h-6 rounded-full bg-white p-0.5" alt="BNP" />
+                                             <span className="text-sm text-gray-300 group-hover:text-white font-medium">BNP Paribas</span>
+                                         </div>
+                                         <div className="flex-1 text-center text-[10px] font-mono text-gray-400 group-hover:text-blue-300">
+                                             FR76 3000 4028 3711
+                                         </div>
+                                         <div className="w-20 text-right">
+                                             <span className="text-[10px] font-bold text-yellow-400 bg-yellow-500/10 border border-yellow-500/20 px-2 py-0.5 rounded">Pending</span>
+                                         </div>
                                      </div>
                                  </div>
                              </div>
