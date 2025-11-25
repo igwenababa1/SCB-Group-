@@ -6,6 +6,7 @@ import { formatCurrency, formatDate } from '../../utils/formatters';
 import TransactionDetailModal from '../../components/dashboard/transactions/TransactionDetailModal';
 import AdvancedFilters from '../../components/dashboard/transactions/AdvancedFilters';
 import { useCurrency } from '../../contexts/GlobalSettingsContext';
+import StatementModal from '../../components/dashboard/StatementModal';
 
 // --- Helper Components ---
 
@@ -84,7 +85,7 @@ const TransactionRow: React.FC<{ transaction: Transaction, onSelect: () => void,
                 <p className="font-bold text-white text-sm truncate group-hover:text-blue-300 transition-colors">{transaction.description}</p>
                 <div className="flex items-center gap-2 mt-1">
                     <span className="text-[10px] text-gray-500 font-mono">{formatDate(transaction.date)}</span>
-                    <span className="text-[10px] text-gray-600">•</span>
+                    <span className="text--[10px] text-gray-600">•</span>
                     <span className="text-[10px] text-gray-500 uppercase tracking-wider">{transaction.category}</span>
                 </div>
             </div>
@@ -145,6 +146,7 @@ const TransactionsView: React.FC<{ setActiveView: (view: ViewType) => void }> = 
         dateRange: { start: '', end: '' },
     });
     const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
+    const [isStatementModalOpen, setIsStatementModalOpen] = useState(false);
 
     // Simulate server loading on filter change
     useEffect(() => {
@@ -189,8 +191,7 @@ const TransactionsView: React.FC<{ setActiveView: (view: ViewType) => void }> = 
     }, [filteredTransactions]);
 
     const exportToCsv = () => {
-        alert("Generating encrypted financial report...");
-        // Real export logic would go here
+        setIsStatementModalOpen(true);
     };
 
     return (
@@ -223,7 +224,7 @@ const TransactionsView: React.FC<{ setActiveView: (view: ViewType) => void }> = 
                          <button onClick={exportToCsv} className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 text-xs font-bold uppercase tracking-wider transition-colors flex items-center gap-2">
                             <i className="fas fa-file-csv"></i> Export CSV
                         </button>
-                         <button className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 text-xs font-bold uppercase tracking-wider transition-colors flex items-center gap-2">
+                         <button onClick={() => setIsStatementModalOpen(true)} className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 text-xs font-bold uppercase tracking-wider transition-colors flex items-center gap-2">
                             <i className="fas fa-print"></i> Print Statement
                         </button>
                     </div>
@@ -295,6 +296,12 @@ const TransactionsView: React.FC<{ setActiveView: (view: ViewType) => void }> = 
                     setActiveView={setActiveView}
                 />
             )}
+
+            <StatementModal 
+                isOpen={isStatementModalOpen}
+                onClose={() => setIsStatementModalOpen(false)}
+                type="Consolidated"
+            />
         </div>
     );
 };

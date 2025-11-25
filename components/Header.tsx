@@ -115,6 +115,7 @@ const Header: React.FC = () => {
                         {/* Actions */}
                         <div className="flex items-center gap-4">
                             <button 
+                                onClick={(e) => handleContentClick(e, 'Search Help Center', 'Client Support')}
                                 className="hidden md:flex items-center justify-center w-10 h-10 rounded-full text-gray-400 hover:text-white hover:bg-white/10 transition-all"
                                 aria-label="Search"
                             >

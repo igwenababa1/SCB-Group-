@@ -7,6 +7,7 @@ import SendMoney from '../../components/dashboard/payments/SendMoney';
 import WireTransfer from '../../components/dashboard/payments/WireTransfer';
 import RecurringPaymentItem from '../../components/dashboard/payments/RecurringPaymentItem';
 import BillPayCenter from '../../components/dashboard/payments/BillPayCenter';
+import StatementModal from '../../components/dashboard/StatementModal';
 
 interface PaymentsViewProps {
     setActiveView: (view: ViewType) => void;
@@ -71,10 +72,7 @@ const PaymentLimitsWidget: React.FC = () => (
 
 const PaymentsView: React.FC<PaymentsViewProps> = ({ setActiveView }) => {
     const [activeTab, setActiveTab] = useState<'send' | 'wire' | 'recurring' | 'bills'>('send');
-
-    const handleDownloadStatements = () => {
-        alert("Downloading latest consolidated statement PDF...");
-    };
+    const [isStatementModalOpen, setIsStatementModalOpen] = useState(false);
 
     const handleOpenSettings = () => {
         setActiveView('settings');
@@ -144,7 +142,7 @@ const PaymentsView: React.FC<PaymentsViewProps> = ({ setActiveView }) => {
                         <p className="text-gray-400 mt-2 text-lg">Global liquidity management and transfer execution.</p>
                     </div>
                     <div className="flex gap-3 mt-4 md:mt-0">
-                         <button onClick={handleDownloadStatements} className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 text-sm font-medium transition-colors flex items-center gap-2">
+                         <button onClick={() => setIsStatementModalOpen(true)} className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 text-sm font-medium transition-colors flex items-center gap-2">
                             <i className="fas fa-download"></i> Statements
                         </button>
                         <button onClick={handleOpenSettings} className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 text-sm font-medium transition-colors flex items-center gap-2">
@@ -228,6 +226,12 @@ const PaymentsView: React.FC<PaymentsViewProps> = ({ setActiveView }) => {
                     </div>
                 </div>
             </div>
+            
+            <StatementModal 
+                isOpen={isStatementModalOpen}
+                onClose={() => setIsStatementModalOpen(false)}
+                type="Account"
+            />
         </div>
     );
 };

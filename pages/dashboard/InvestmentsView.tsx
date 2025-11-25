@@ -7,6 +7,7 @@ import type { Holding, AssetAllocationItem, MarketMover, WatchlistItem, ViewType
 import TradeModal from '../../components/dashboard/investments/TradeModal';
 import HoldingSparkline from '../../components/dashboard/investments/HoldingSparkline';
 import HoldingDetailModal from '../../components/dashboard/investments/HoldingDetailModal';
+import StatementModal from '../../components/dashboard/StatementModal';
 
 Chart.register(...registerables);
 
@@ -105,6 +106,7 @@ const InvestmentsView: React.FC<{ setActiveView: (view: ViewType) => void }> = (
     const [tradeDetails, setTradeDetails] = useState<{ holding: Holding | null, type: 'Buy' | 'Sell' }>({ holding: null, type: 'Buy' });
     const [selectedHolding, setSelectedHolding] = useState<Holding | null>(null);
     const [sortConfig, setSortConfig] = useState<{ key: keyof Holding | 'marketValue'; direction: 'asc' | 'desc' } | null>(null);
+    const [isStatementModalOpen, setIsStatementModalOpen] = useState(false);
 
     // Chart Refs
     const portfolioChartRef = useRef<HTMLCanvasElement>(null);
@@ -279,8 +281,8 @@ const InvestmentsView: React.FC<{ setActiveView: (view: ViewType) => void }> = (
                         <p className="text-gray-400 text-sm">Real-time portfolio analytics and execution.</p>
                     </div>
                     <div className="flex gap-3">
-                         <button className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 text-xs font-bold uppercase tracking-wider transition-colors">
-                            <i className="fas fa-file-pdf mr-2"></i> Statements
+                         <button onClick={() => setIsStatementModalOpen(true)} className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 text-xs font-bold uppercase tracking-wider transition-colors flex items-center gap-2">
+                            <i className="fas fa-file-pdf"></i> Statements
                         </button>
                         <button className="px-4 py-2 rounded-lg bg-yellow-500 text-black font-bold hover:bg-yellow-400 shadow-lg shadow-yellow-500/20 transition-all text-sm flex items-center gap-2">
                             <i className="fas fa-plus"></i> Deposit Funds
@@ -477,6 +479,12 @@ const InvestmentsView: React.FC<{ setActiveView: (view: ViewType) => void }> = (
                     onSell={(h) => handleTrade(h, 'Sell')}
                 />
             )}
+
+            <StatementModal 
+                isOpen={isStatementModalOpen}
+                onClose={() => setIsStatementModalOpen(false)}
+                type="Investment"
+            />
         </div>
     );
 };
