@@ -1,14 +1,3 @@
-
-
-
-
-
-
-
-
-
-
-
 import type {
     Feature,
     Testimonial,
@@ -359,7 +348,15 @@ export const CONNECTED_APPS: ConnectedApp[] = [
     { id: 'app-2', name: 'Cash App', description: 'Mobile payment service.', logoUrl: 'https://logo.clearbit.com/cash.app', isConnected: true },
     { id: 'app-3', name: 'Venmo', description: 'Social payments app.', logoUrl: 'https://logo.clearbit.com/venmo.com', isConnected: false },
     { id: 'app-4', name: 'Zelle', description: 'U.S.-based digital payments network.', logoUrl: 'https://logo.clearbit.com/zellepay.com', isConnected: false },
-    { id: 'app-5', name: 'Plaid', description: 'Connect your financial accounts.', logoUrl: 'https://logo.clearbit.com/plaid.com', isConnected: false },
+    { id: 'app-5', name: 'Western Union', description: 'Global money transfer service.', logoUrl: 'https://logo.clearbit.com/westernunion.com', isConnected: false },
+    { id: 'app-6', name: 'MoneyGram', description: 'International money transfers.', logoUrl: 'https://logo.clearbit.com/moneygram.com', isConnected: false },
+    { id: 'app-7', name: 'Wise', description: 'Online money transfer service.', logoUrl: 'https://logo.clearbit.com/wise.com', isConnected: false },
+    { id: 'app-8', name: 'Revolut', description: 'Global financial superapp.', logoUrl: 'https://logo.clearbit.com/revolut.com', isConnected: false },
+    { id: 'app-9', name: 'Chime', description: 'Mobile banking services.', logoUrl: 'https://logo.clearbit.com/chime.com', isConnected: false },
+    { id: 'app-10', name: 'Citi', description: 'Citibank online integration.', logoUrl: 'https://logo.clearbit.com/citi.com', isConnected: false },
+    { id: 'app-11', name: 'Capital One', description: 'Credit cards and banking.', logoUrl: 'https://logo.clearbit.com/capitalone.com', isConnected: false },
+    { id: 'app-12', name: 'Chase', description: 'JPMorgan Chase banking.', logoUrl: 'https://logo.clearbit.com/chase.com', isConnected: false },
+    { id: 'app-13', name: 'Bank of America', description: 'Bank of America integration.', logoUrl: 'https://logo.clearbit.com/bankofamerica.com', isConnected: false },
 ];
 
 export const CONNECTED_APP_ACTIVITIES: ConnectedAppActivity[] = [
